@@ -1,0 +1,106 @@
+title Inventory Sequence Diagram
+
+actor Player
+participant gameScreen
+participant Inventory
+participant UI
+participant craftingPage
+participant Trade2/1Page
+participant Item
+participant Blueprint
+
+Player->gameScreen:startGame()
+activate Player
+activate gameScreen
+
+gameScreen->UI:openInventoryPage()
+deactivate gameScreen
+activate UI
+ Player<--UI:showInventoryOptions()
+ deactivate UI
+ alt 1. Crafting
+ Player->craftingPage:selectCraftPage()
+ activate craftingPage
+
+ 
+ alt 2. User chooses to craft
+  craftingPage->Inventory:craft()
+  deactivate craftingPage
+  activate Inventory
+  Inventory->Inventory:checkIfMaterialsAreMissing()
+ alt 3. Materials are not missing
+
+
+
+Inventory->Item:addItemToInventory()
+activate Item
+
+Inventory<-Item:removeMatFromInventory()
+deactivate Item
+
+
+  else 3.1 Some materials are missing
+ activate UI
+ Inventory->UI:cancelCrafting()
+
+ deactivate Inventory
+ deactivate UI
+  end 
+ 
+
+
+  else 2.1 User chooses item to see its blueprint
+
+ craftingPage->Item:selectItem()
+ activate Item
+ 
+
+ Item->Blueprint:getBlueprint()
+  activate Blueprint
+ Blueprint->UI:showBlueprint()
+ 
+ end
+ deactivate Blueprint
+deactivate Item
+
+
+  else 1.1 Dismantling
+   
+   Player->UI:choosesDismantle()
+    activate UI
+  
+  UI->Inventory:dismantle()
+  activate Inventory
+  Inventory->Inventory:IsThereEnoughSpaceInInventory()
+  alt 1.1.2 There is space in Inventory
+  
+  Inventory->Inventory:canPlayerCraftNewItem()
+  Inventory->UI:showNotification()
+ 
+  else 1.1.2. 1 There is no space in Inventory
+ 
+  Inventory->UI:cancelDismantle()
+  deactivate UI
+  end 
+  deactivate Inventory
+  else 1.2 Trade 2:1
+  Player->Trade2/1Page:choosesTrade()
+  activate Trade2/1Page
+  Inventory<-Trade2/1Page:chooseMaterialsForTrade()
+  activate Inventory
+  deactivate Trade2/1Page
+  Inventory->Inventory:areThereEnoughMatForTrade()
+  alt 1.2.5 There are enough materials for Trade
+  Inventory->Inventory:addMatToInventoty()
+  Inventory->Inventory:removeMatFromInventory()
+ Inventory->Inventory:canPlayerCraftNewItem()
+  Inventory->UI:showNotification()
+    activate UI
+  else 1.2.5.1 Not enough materials for Trade
+  Inventory->UI:cancelTrade()
+  deactivate UI
+  deactivate Inventory
+  end
+  end
+  deactivate Player
+ 
