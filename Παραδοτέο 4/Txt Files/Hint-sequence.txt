@@ -1,0 +1,74 @@
+title Hint sequence diagram
+
+actor Player
+
+participant GamePage-UI
+participant HintPage-UI
+participant Inventory
+participant SearchField-UI
+participant Hint
+participant User
+participant HintReview-UI
+participant Server
+participant HintCreationPage-UI
+
+entryspacing 0.8
+activate Player
+Player->GamePage-UI:choosesHint()
+activate GamePage-UI
+GamePage-UI->HintPage-UI:show()
+deactivate GamePage-UI
+activate HintPage-UI
+alt Player chooses to see hint
+Player->HintPage-UI:showHint()
+HintPage-UI->>Inventory:checkNumOfHints()
+activate Inventory
+alt Player can see a hint
+Inventory-->HintPage-UI: Success
+HintPage-UI->SearchField-UI:show()
+activate SearchField-UI
+Player->SearchField-UI:inputKeys()
+SearchField-UI->Hint:findHint()
+activate Hint
+deactivate SearchField-UI
+Hint->Hint:searchHint()
+Hint-->HintPage-UI:hint
+deactivate Hint
+activate HintReview-UI
+HintPage-UI->HintReview-UI:show()
+deactivate HintPage-UI
+Player->HintReview-UI:reviewHint()
+HintReview-UI->Server:updateHintReviews()
+activate Server
+deactivate HintReview-UI
+Server->Server:ckeckReviews()
+activate User
+Server->User:updateHintsOfUser()
+deactivate Server
+deactivate User
+else Player can't see a hint
+activate HintPage-UI
+Inventory-->HintPage-UI: Failure
+deactivate Inventory
+deactivate HintPage-UI
+
+end
+else Player chooses to write hint
+activate HintPage-UI
+Player->HintPage-UI:writeHint()
+HintPage-UI->HintCreationPage-UI:show()
+activate HintCreationPage-UI
+deactivate HintPage-UI
+HintCreationPage-UI->SearchField-UI:show()
+activate SearchField-UI
+Player->SearchField-UI:inputHint()
+SearchField-UI->SearchField-UI:checkText()
+alt text is OK
+SearchField-UI-->HintCreationPage-UI:success
+else text is not OK
+SearchField-UI-->HintCreationPage-UI:failure
+deactivate HintCreationPage-UI
+deactivate SearchField-UI
+end
+end
+deactivate Player
