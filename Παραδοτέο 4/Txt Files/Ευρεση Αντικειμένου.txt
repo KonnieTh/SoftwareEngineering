@@ -1,0 +1,82 @@
+title ευρεση αντικειμένου
+
+
+actor Player
+participant game screen
+participant Item
+participant M*essages
+participant DiscardPage
+participant Inventory
+participant MysteryItem
+
+Player->game screen:founds Item
+activate game screen
+game screen->Item:interact()
+activate Item
+Item->M*essages:showMessage(want to pick it up?)
+activate M*essages
+
+
+alt mystery item
+M*essages->Inventory:gotSpace()
+activate Inventory
+
+alt no space
+Inventory-->M*essages:not enough space
+deactivate Inventory
+M*essages->M*essages:showMessage(want to trade?)
+M*essages->DiscardPage:showPage()
+activate DiscardPage
+deactivate M*essages
+DiscardPage->Inventory:tradeItems()
+activate Inventory
+deactivate DiscardPage
+
+else got enough space
+Inventory->Inventory:AddItem()
+end 
+Inventory->MysteryItem:checkEffect()
+activate MysteryItem
+
+alt positive effect
+MysteryItem->Inventory:AddValuableItem()
+else  negative effect
+MysteryItem->Inventory:DestroyItems()
+end 
+deactivate MysteryItem
+
+else resources
+M*essages->Inventory:gotSpace()
+
+alt no space
+activate M*essages
+Inventory-->M*essages:not enough space
+deactivate Inventory
+M*essages->M*essages:showMessage(want to trade?)
+M*essages->DiscardPage:showPage()
+activate DiscardPage
+deactivate M*essages
+DiscardPage->Inventory:tradeResources()
+activate Inventory
+deactivate DiscardPage
+
+else got enough space
+Inventory->Inventory:AddResources()
+end
+Inventory->Inventory:checkItemCraft()*
+activate M*essages
+Inventory->M*essages:showMessage(you can craft "Item name")
+deactivate M*essages
+deactivate Inventory
+deactivate Item
+
+else Blueprint
+M*essages->Inventory:addBlueprint()
+activate Inventory
+Inventory->Inventory:checkItemCraft()*
+activate M*essages
+Inventory->M*essages:showMessage(you can craft "Item name")
+deactivate M*essages
+deactivate Inventory
+
+end
