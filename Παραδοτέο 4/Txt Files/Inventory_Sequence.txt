@@ -91,7 +91,7 @@ deactivate Item
   deactivate Trade2/1Page
   Inventory->Inventory:areThereEnoughMatForTrade()
   alt 1.2.5 There are enough materials for Trade
-  Inventory->Inventory:addMatToInventoty()
+  Inventory->Inventory:addMatToInventory()
   Inventory->Inventory:removeMatFromInventory()
  Inventory->Inventory:canPlayerCraftNewItem()
   Inventory->UI:showNotification()
