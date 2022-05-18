@@ -1,0 +1,94 @@
+
+title E-shop sequence diagram
+
+actor Player
+
+participant startingScreen
+participant shopMenu
+participant makeOfferForm
+participant availProductsList
+participant listOfPlayersOffers
+participant availBidsList
+participant server
+
+
+
+participant errorMessage
+
+Player->startingScreen:enterShop()
+activate startingScreen
+
+startingScreen->shopMenu:show()
+activate shopMenu
+deactivate startingScreen
+
+
+
+
+  alt user chooses to make offer
+  Player->shopMenu:makeOffer() 
+  shopMenu->makeOfferForm:display()
+  activate makeOfferForm
+  Player->makeOfferForm:makeOffer()
+  makeOfferForm->server:publishOffer()
+  activate server
+  alt makingOfferSuccessful
+  server->listOfPlayersOffers:addNewOffer()  
+  else cannot make offer
+  server->errorMessage:raiseErr()
+  activate errorMessage
+  Player<--errorMessage:printErr()
+  deactivate server
+  deactivate errorMessage
+  deactivate makeOfferForm
+ end
+ else user chooses to buy from store
+
+   shopMenu->availProductsList:display()
+   activate availProductsList
+   Player->availProductsList:chooseToBuy()
+   availProductsList->server:publishPurchase()
+   activate server
+   
+   alt user can't buy chosen item
+   server->errorMessage:raiseErr()
+   activate errorMessage
+   Player<--errorMessage:printErr()
+   deactivate errorMessage
+   else user bought item
+   server-->availProductsList:removeOfferFromList()
+   deactivate availProductsList
+   server-->Player:updateInventory()
+   deactivate server
+   end
+  else user chooses to buy from other player
+   shopMenu->listOfPlayersOffers:display()
+   activate listOfPlayersOffers
+   deactivate shopMenu
+   Player->listOfPlayersOffers:chooseToBuy()
+   listOfPlayersOffers->server:publishPurchase()
+   activate server
+   alt user Buys Via Buyout
+   alt user can buy item
+   server-->listOfPlayersOffers:removeOfferFromList()
+   server-->Player:updateInventory()
+    else user cannot buy item
+    server->errorMessage:raiseErr()
+    activate errorMessage
+    Player<--errorMessage:printErr()
+    deactivate server
+    deactivate errorMessage
+    end 
+   else user makes bid
+   listOfPlayersOffers->server:askForBidsList()
+   deactivate listOfPlayersOffers
+   activate server
+   server-->availBidsList:returnAvailBids()
+   activate availBidsList
+   Player->availBidsList:makeBid()
+   availBidsList->server:saveBid
+   deactivate availBidsList
+   deactivate server
+   end 
+   end 
+
