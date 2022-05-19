@@ -61,7 +61,7 @@ class Picture:
     def show(self) -> None:
         screen.blit(pygame.image.load(self.imagePath), (self.x, self.y))
 
-
+user_text=""
 button0 = Button("Create your Own Level", (x / 8.6, y / 6), font=40, bg="navy")
 button1 = Button("Lobby", (2.7 * x / 3.9, y / 32), font=30, bg="navy")
 button2 = Button("Community Levels", (3 * x / 4, y / 32), font=30, bg="light green")
@@ -71,11 +71,18 @@ button4 =Button("    Back    ", (x/9.5,  y/4+450), font=30, bg="navy")
 button5 = Button("Download", (x / 1.45, y / 2.75), font=35, bg="navy")
 
 label1 = Label("Available Levels", (x/8+350, y/3.5), myfont, "navy")
-
 label2 = Label("#1111", (x/7, y/6+150),pygame.font.SysFont("Arial", 30), "navy")
 label3 = Label("usernameOfCreator", (x/4, y/6+150), pygame.font.SysFont("Arial", 30), "navy")
 label4 = Label("Screenshots", (x/2.15, y/6+150), pygame.font.SysFont("Arial", 38), "navy")
 label5 = Label("Total downloads: 9999",(x / 1.45, y / 2.40),pygame.font.SysFont("Arial", 15), "navy")
+
+inputt=pygame.Rect(x / 8 + 800, y / 6 + 10, 200, 35)
+
+color_active = pygame.Color((250,250,250))
+color_passive = pygame.Color('white')
+color = color_passive
+active = False
+active_check=False
 
 # game loop
 running = True
@@ -85,6 +92,23 @@ while running:
             pygame.quit()
             sys.exit()
         button4.click(event, pygame.QUIT)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if inputt.collidepoint(event.pos):
+                active = True
+            else:
+                active = False
+        if event.type == pygame.KEYDOWN:
+            # Check for backspace
+            if active == True:
+                if event.key == pygame.K_BACKSPACE:
+                    # get text input from 0 to -1 i.e. end.
+                    user_text = user_text[:-1]
+                # Unicode standard is used for string formation
+                elif (event.key == pygame.K_RETURN):
+                    save_text = user_text
+                    user_text = " "
+                else:
+                    user_text += event.unicode
     screen.fill((32, 230, 174))
 
     button0.show()
@@ -99,11 +123,14 @@ while running:
     label4.show()
     label5.show()
     pygame.draw.rect(screen, "navy", pygame.Rect(x / 9.4, y / 11, 1100, 550), 2)  #big rectangle
-    pygame.draw.rect(screen, "white", pygame.Rect(x / 8 + 800, y / 6 + 10, 200, 35))  #textbox
+    pygame.draw.rect(screen, color, inputt)  #textbox
     pygame.draw.rect(screen, "navy", pygame.Rect(x / 8, y / 2.8, 1025, 65), 2) #thin rectangle
     pygame.draw.rect(screen, "navy", pygame.Rect(x / 2.25, y / 2.75, 240, 40), 2) # screenshots box
     pygame.draw.rect(screen, "navy", pygame.Rect(x / 8.5, y / 2.9, 1070, 345), 2)
 
     pygame.draw.rect(screen, "white", pygame.Rect(x / 8+1038, y / 6 + 140, 15, 335))  #scrollbar
     pygame.draw.rect(screen, "dark grey", pygame.Rect(x / 8 + 1039, y / 6 + 140, 13, 90))  #scrollbar
+    text_surface = pygame.font.SysFont("Arial", 28).render(user_text, True, "black")
+    inputt.w = max(250, text_surface.get_width() + 10)
+    screen.blit(text_surface, (inputt.x + 5, inputt.y + 5))
     pygame.display.update()

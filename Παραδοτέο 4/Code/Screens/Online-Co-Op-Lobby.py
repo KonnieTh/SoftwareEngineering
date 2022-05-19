@@ -12,7 +12,7 @@ pygame.init()
 myfont = pygame.font.SysFont("Arial", 45, bold=True)
 label = myfont.render("Welcome to", False, (255, 255, 255))
 
-
+"""
 def showCommunityLevels():
     running1 = True
     while running1:
@@ -20,7 +20,7 @@ def showCommunityLevels():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running1= False
-
+"""
 
 class Button:
     """Create a button, then blit the surface in the while loop"""
@@ -69,7 +69,7 @@ class Picture:
     def show(self) -> None:
         screen.blit(pygame.image.load(self.imagePath), (self.x, self.y))
 
-
+user_text=""
 button0 = Button("Create your Own Room", (x / 8.6, y / 6), font=40, bg="navy")
 button1 = Button("Lobby", (2.7 * x / 3.9, y / 32), font=30, bg="light green")
 button2 = Button("Community Levels", (3 * x / 4, y / 32), font=30, bg="navy")
@@ -83,6 +83,14 @@ label3 = Label("usernameOfHost", (x/4, y/6+150), pygame.font.SysFont("Arial", 30
 label4 = Label("LevelPlaying", (x/2.2, y/6+150), pygame.font.SysFont("Arial", 30), "navy")
 label5 = Label("NumOfPlayersConnected", (x/1.6, y/6+150), pygame.font.SysFont("Arial", 30), "navy")
 
+inputt=pygame.Rect(x / 8 + 800, y / 6 + 10, 200, 35)
+
+color_active = pygame.Color((250,250,250))
+color_passive = pygame.Color('white')
+color = color_passive
+active = False
+active_check=False
+
 # game loop
 running = True
 while running:
@@ -91,7 +99,24 @@ while running:
             pygame.quit()
             sys.exit()
         button4.click(event, pygame.QUIT)
-        button2.click(event,showCommunityLevels())
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if inputt.collidepoint(event.pos):
+                active = True
+            else:
+                active = False
+        if event.type == pygame.KEYDOWN:
+            # Check for backspace
+            if active == True:
+                if event.key == pygame.K_BACKSPACE:
+                    # get text input from 0 to -1 i.e. end.
+                    user_text = user_text[:-1]
+                # Unicode standard is used for string formation
+                elif (event.key == pygame.K_RETURN):
+                    save_text = user_text
+                    user_text = " "
+                else:
+                    user_text += event.unicode
+
     screen.fill((32, 230, 174))
 
     button0.show()
@@ -111,4 +136,7 @@ while running:
 
     pygame.draw.rect(screen, "white", pygame.Rect(x / 8+1038, y / 6 + 140, 15, 335))  #scrollbar
     pygame.draw.rect(screen, "dark grey", pygame.Rect(x / 8 + 1039, y / 6 + 140, 13, 90))  #scrollbar
+    text_surface = pygame.font.SysFont("Arial", 28).render(user_text, True, "black")
+    inputt.w = max(250, text_surface.get_width() + 10)
+    screen.blit(text_surface, (inputt.x + 5, inputt.y + 5))
     pygame.display.update()
