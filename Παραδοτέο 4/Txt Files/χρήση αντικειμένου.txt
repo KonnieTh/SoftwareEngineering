@@ -1,0 +1,181 @@
+title χρήση αντικειμένου
+
+actor Player
+participant Item menu
+participant M*essages
+participant range&radius
+participant gum
+participant Scientist
+participant Alien
+participant Inventory
+participant GumGun
+participant StunGun
+
+
+activate Player
+
+Player->Item menu:openMenu()
+activate Item menu
+Inventory->Item menu:doesExists()
+activate Inventory
+
+alt gum gun
+Item menu->Inventory:chooseGumGun()
+deactivate Item menu
+Inventory->GumGun:renderGumGun()
+deactivate Inventory
+activate GumGun
+GumGun->GumGun:isThereAmmo()
+
+alt there is ammo
+activate range&radius
+GumGun->range&radius:showRR()
+deactivate range&radius
+activate gum
+Player->GumGun:shoot()
+GumGun->gum:createGum()
+activate Inventory
+GumGun->Inventory:decreaseAmmo()
+deactivate Inventory
+gum->gum:take*Space()
+
+gum->Alien:isCollided()
+activate Alien
+Alien->Alien:decreaseSpeed()
+deactivate Alien
+gum->Scientist:isCollided()
+activate Scientist
+Scientist->Scientist:decreaseSpeed()
+deactivate Scientist
+deactivate GumGun
+deactivate gum
+
+
+else no ammo
+activate M*essages
+activate GumGun
+GumGun-->M*essages:showMessage(no ammo)
+deactivate M*essages
+deactivate GumGun
+end
+
+else stun gun
+activate Item menu
+Item menu->Inventory:chooseStunGun()
+activate Inventory
+deactivate Item menu
+Inventory->StunGun:renderStunGun()
+activate StunGun
+deactivate Inventory
+Player->StunGun:shoot()
+
+
+alt scientist hit
+StunGun->Scientist:isCollided()
+activate Scientist
+Scientist->Scientist:isStuned()
+deactivate Scientist
+
+else Template hit
+StunGun->Template:isCollided()
+activate Template
+Template->Template:reflect()
+Template->Alien:isCollided()
+deactivate Template
+activate Alien
+Alien->Alien:isStuned()
+deactivate Alien
+deactivate StunGun
+end
+
+else EMP grenade
+activate Item menu
+Item menu->Inventory:chooseEMP()
+activate Inventory
+deactivate Item menu
+Inventory->EMPGrenade:renderEMP()
+activate EMPGrenade
+deactivate Inventory
+Player->EMPGrenade:shoot()
+activate range&radius
+EMPGrenade->range&radius:showRR() [Range & Radius]
+
+alt scientist is radius
+range&radius->Scientist:isInRadius()
+deactivate range&radius
+activate Scientist
+Scientist->Scientist:disableElectricDevice()
+deactivate Scientist
+else leiser in radius
+activate range&radius
+range&radius->Template:isInRadius()
+deactivate range&radius
+activate Template
+Template->Template:isDisabled()
+deactivate Template
+end
+deactivate EMPGrenade
+
+else time travel
+activate Item menu
+Item menu->Inventory:chooseTT()[TimeTravel]
+activate Inventory
+deactivate Item menu
+Inventory->TimeTravelGrenade:renderTT()
+deactivate Inventory
+activate TimeTravelGrenade
+Player->TimeTravelGrenade:shoot()
+activate range&radius
+TimeTravelGrenade->range&radius:showRR()
+parallel 
+range&radius->Scientist:isInRadius()
+activate Scientist
+range&radius->Alien:isInRadius()
+activate Alien
+range&radius->Template:isInRadius()
+deactivate range&radius
+activate Template
+parallel off
+parallel 
+Scientist->Scientist:returnToPreviousState()
+Alien->Alien:returnToPreviousState()
+Template->Template:returnToPreviousState()
+parallel off
+deactivate Scientist
+deactivate Alien
+deactivate Template
+deactivate TimeTravelGrenade
+
+else time freeze
+activate Item menu
+Item menu->Inventory:chooseTF()[Time Freeze]
+activate Inventory
+deactivate Item menu
+Inventory->TimeTravelGrenade:renderTF()
+deactivate Inventory
+activate TimeTravelGrenade
+activate Level
+TimeTravelGrenade->Level:freezeEverything()
+deactivate Level
+deactivate TimeTravelGrenade
+
+else life potion
+activate Item menu
+Item menu->Inventory:chooseLifePotion()
+activate Inventory
+deactivate Item menu
+Inventory->LifePotion:useLifePotion()
+activate LifePotion
+LifePotion->Alien:checkLife()
+activate Alien
+alt full life
+activate M*essages
+Alien-->M*essages:showMessage(full Life)
+deactivate M*essages
+else missing life
+Alien->LifePotion:restoreLifePoints()
+LifePotion->Inventory:decreaseStash()
+deactivate LifePotion
+deactivate Inventory
+end
+end
