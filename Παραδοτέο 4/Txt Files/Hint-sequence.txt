@@ -4,7 +4,6 @@ actor Player
 
 participant GamePage-UI
 participant HintPage-UI
-participant Inventory
 participant SearchField-UI
 participant Hint
 participant User
@@ -21,13 +20,12 @@ deactivate GamePage-UI
 activate HintPage-UI
 alt Player chooses to see hint
 Player->HintPage-UI:showHint()
-HintPage-UI->>Inventory:checkNumOfHints()
-activate Inventory
+HintPage-UI->>User:checkNumOfHints()
 alt Player can see a hint
-Inventory-->HintPage-UI: Success
+User-->HintPage-UI: Success
 HintPage-UI->SearchField-UI:show()
 activate SearchField-UI
-Player->SearchField-UI:inputKeys()
+Player->SearchField-UI:submitInput()
 SearchField-UI->Hint:findHint()
 activate Hint
 deactivate SearchField-UI
@@ -41,27 +39,26 @@ Player->HintReview-UI:reviewHint()
 HintReview-UI->Server:updateHintReviews()
 activate Server
 deactivate HintReview-UI
-Server->Server:ckeckReviews()
+Server->Server:ckeckPercentageOfPositiveReviews()
 activate User
 Server->User:updateHintsOfUser()
 deactivate Server
 deactivate User
 else Player can't see a hint
 activate HintPage-UI
-Inventory-->HintPage-UI: Failure
-deactivate Inventory
+User-->HintPage-UI: Failure
 deactivate HintPage-UI
 
 end
-else Player chooses to write hint
 activate HintPage-UI
+else Player chooses to write hint
 Player->HintPage-UI:writeHint()
 HintPage-UI->HintCreationPage-UI:show()
 activate HintCreationPage-UI
 deactivate HintPage-UI
 HintCreationPage-UI->SearchField-UI:show()
 activate SearchField-UI
-Player->SearchField-UI:inputHint()
+Player->SearchField-UI:submitInput()
 SearchField-UI->SearchField-UI:checkText()
 alt text is OK
 SearchField-UI-->HintCreationPage-UI:success
