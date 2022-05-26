@@ -4,3 +4,5 @@ class Inventory:
         self.__size = 10
         self.__materialList = ['cables','gears','metalScraps','oil','springs']
         self.__itemList = []
+
+    
