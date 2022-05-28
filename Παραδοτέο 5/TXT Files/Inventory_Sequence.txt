@@ -97,15 +97,21 @@ deactivate UI
 
 
 
-else 3.2 Player chooses item that already exists in the position
+else 3.2 Player chooses item that already exists in position
+craftingPage->Item:<color:#red>selectItem()
+activate Item
+Item-->Inventory:<color:#red>item
+
+activate craftingPage
 activate Inventory
  Inventory->Inventory:<color:#red>areThereEnoughMaterials()
+
  alt 3. Materials are not missing
 
 
 
 Inventory->Item:<color:#red>addItem()
-activate Item
+
 
 Inventory<-Item:<color:#red>removeMaterials()
 deactivate Item
