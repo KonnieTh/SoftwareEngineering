@@ -1,0 +1,162 @@
+title Inventory Sequence Diagram
+
+actor Player
+participant gameScreen
+participant Inventory
+participant UI
+participant craftingPage
+participant Trade2/1Page
+participant Item
+participant Blueprint
+participant ListOfBlueprints
+
+Player->gameScreen:startGame()
+activate Player
+activate gameScreen
+
+gameScreen->UI:openInventoryPage()
+deactivate gameScreen
+activate UI
+ Player<-UI:showInventoryOptions()
+ deactivate UI
+ alt 1. Crafting
+ Player->craftingPage:selectCraftPage()
+ activate craftingPage
+
+ 
+ alt 3. Player chooses to add blueprint
+ craftingPage->Inventory:<color:#red>addBlueprint()
+activate Inventory
+activate ListOfBlueprints
+Inventory->ListOfBlueprints:<color:#red>showBlueprints()
+deactivate ListOfBlueprints
+alt Player adds inactive blueprint
+Player->Inventory:<color:#red>addInactiveBlueprint()
+
+Inventory->Inventory:<color:#red>doesPlayerHaveCoins()
+
+Inventory->Blueprint:<color:#red>activateBlueprint()
+else Player adds active blueprint
+Player->Inventory:<color:#red>addActiveBlueprint()
+end
+activate Blueprint
+Player->Inventory:<color:#red>selectPosForItem()
+Inventory->Inventory:<color:#red>isThereAnotherItemInPos()
+opt
+Inventory->Item:<color:#red>removeItem()
+activate Item
+end
+Item->Inventory:<color:#red>makeItemCraftable()
+deactivate Item
+Inventory->Blueprint:<color:#red>deactivateBlueprint()
+
+deactivate Blueprint
+  Player->Inventory:<color:#red>chooseCraft()
+  deactivate craftingPage
+  Inventory->Inventory:checkIfMaterialsAreMissing()
+ alt 3. Materials are not missing
+
+
+
+Inventory->Item:addItem()
+activate Item
+
+Inventory<-Item:removeMaterials()
+deactivate Item
+
+
+  else 3.1 Some materials are missing
+ activate UI
+ Inventory->UI:cancelCrafting()
+
+ deactivate Inventory
+ deactivate UI
+  end 
+ 
+
+
+  else 3.1 Player chooses item to see its blueprint
+
+ craftingPage->Item:selectItem()
+ activate craftingPage
+ activate Item
+ 
+ 
+
+ Item->Blueprint:getBlueprint()
+ deactivate Item
+  activate Blueprint
+  activate UI 
+
+ Blueprint->UI:showBlueprint()
+  deactivate craftingPage
+deactivate UI
+ 
+
+ deactivate Blueprint
+
+
+
+else 3.2 Player chooses item that already exists in the position
+activate Inventory
+ Inventory->Inventory:<color:#red>areThereEnoughMaterials()
+ alt 3. Materials are not missing
+
+
+
+Inventory->Item:<color:#red>addItem()
+activate Item
+
+Inventory<-Item:<color:#red>removeMaterials()
+deactivate Item
+
+
+  else 3.1 Some materials are missing
+ activate UI
+ Inventory->UI:<color:#red>cancelCrafting()
+
+ deactivate Inventory
+ deactivate UI
+  end 
+end
+deactivate Inventory
+  else 1.1 Dismantling
+   
+   Player->UI:choosesDismantle()
+    activate UI
+  
+  UI->Inventory:dismantle()
+  activate Inventory
+  Inventory->Inventory:enoughSpace()
+  alt 1.1.2 There is space in Inventory
+  
+  Inventory->Inventory:canPlayerCraftNewItem()
+  Inventory->UI:showNotification()
+ 
+  else 1.1.2. 1 There is no space in Inventory
+ 
+  Inventory->UI:cancelDismantle()
+  deactivate UI
+  end 
+  deactivate Inventory
+  else 1.2 Trade 2:1
+  Player->Trade2/1Page:choosesTrade()
+  activate Trade2/1Page
+  Inventory<-Trade2/1Page:chosenMaterialsForTrade()
+  activate Inventory
+  deactivate Trade2/1Page
+  Inventory->Inventory:areThereEnoughMaterials()
+  alt 1.2.5 There are enough materials for Trade
+  Inventory->Inventory:addMaterials()
+  Inventory->Inventory:removeMaterials()
+ Inventory->Inventory:canPlayerCraftNewItem()
+  Inventory->UI:showNotification()
+    activate UI
+  else 1.2.5.1 Not enough materials for Trade
+  Inventory->UI:cancelTrade()
+  deactivate UI
+  deactivate Inventory
+  end
+  end
+  deactivate Player
+ 
