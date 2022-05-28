@@ -1,0 +1,82 @@
+title Hint Sequence Diagram
+
+actor Player
+
+participant GamePage-UI
+participant HintPage-UI
+participant SearchField-UI
+participant Hint
+participant User
+participant HintReview-UI
+participant Server
+participant HintCreationPage-UI
+
+entryspacing 0.8
+activate Player
+Player->GamePage-UI:choosesHint()
+activate GamePage-UI
+GamePage-UI->HintPage-UI:show()
+deactivate GamePage-UI
+activate HintPage-UI
+alt Player chooses to see hint
+Player->HintPage-UI:showHint()
+HintPage-UI->>User:checkNumOfHints()
+activate User
+alt Player can see a hint
+User-->HintPage-UI: Success
+deactivate User
+HintPage-UI->SearchField-UI:show()
+activate SearchField-UI
+Player->SearchField-UI:submitInput()
+SearchField-UI->Server:<color:#red>findHint()</color>
+deactivate SearchField-UI
+activate Server
+Server->Server:<color:#red>searchHint()</color>
+Server->Hint:<color:#red>getHint()</color>
+deactivate Server
+activate Hint
+Hint-->HintPage-UI:hint
+deactivate Hint
+activate HintReview-UI
+HintPage-UI->HintReview-UI:show()
+deactivate HintPage-UI
+Player->HintReview-UI:reviewHint()
+HintReview-UI->Server:updateHintReviews()
+activate Server
+deactivate HintReview-UI
+Server->Server:ckeckPercentageOfPositiveReviews()
+activate User
+Server->User:<color:#red>updateHintsAndCoinsOfUser()</color>
+deactivate Server
+deactivate User
+else Player can't see a hint
+activate HintPage-UI
+activate User
+User-->HintPage-UI: Failure
+deactivate User
+deactivate HintPage-UI
+
+end
+activate HintPage-UI
+else Player chooses to write hint
+Player->HintPage-UI:writeHint()
+HintPage-UI->HintCreationPage-UI:show()
+activate HintCreationPage-UI
+deactivate HintPage-UI
+HintCreationPage-UI->SearchField-UI:show()
+activate SearchField-UI
+Player->SearchField-UI:submitInput()
+SearchField-UI->SearchField-UI:checkText()
+alt text is OK
+SearchField-UI-->HintCreationPage-UI:success
+HintCreationPage-UI->Server:<color:#red>sendHint()</color>
+activate Server
+Server->Server:<color:#red>storeHint()</color>
+deactivate Server
+else text is not OK
+SearchField-UI-->HintCreationPage-UI:failure
+deactivate HintCreationPage-UI
+deactivate SearchField-UI
+end
+end
+deactivate Player
