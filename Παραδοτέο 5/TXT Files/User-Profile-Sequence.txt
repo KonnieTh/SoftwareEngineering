@@ -1,0 +1,136 @@
+title Profile sequence diagram
+
+actor Player
+
+participant MainMenu-UI
+participant UserProfile-UI
+participant Server
+participant User
+participant FriendsList
+participant PageUpdatingProfile-UI
+participant Achievement
+participant Inventory
+participant ItemsList
+participant Item
+
+entryspacing 0.8
+activate Player
+Player->MainMenu-UI:openProfile()
+activate MainMenu-UI
+
+MainMenu-UI->UserProfile-UI:show()
+activate UserProfile-UI
+deactivate MainMenu-UI
+
+  alt User Chooses to add friend
+  Player->UserProfile-UI:searchUser()
+  UserProfile-UI->Server:userRequest()
+  deactivate UserProfile-UI
+  activate Server
+
+  loop until found
+  Server->>User:<color:#red>checkUser()</color>
+  activate User
+  end
+  User-->Server:<color:#red>user</color>
+  deactivate User
+  alt User Found
+  Server->UserProfile-UI:showUser()
+  activate UserProfile-UI
+  Player->UserProfile-UI:addFriend()
+  UserProfile-UI->Server:sendFriendRequest()
+  deactivate UserProfile-UI
+  Server->>User:sendFriendRequest()
+  activate User
+  alt Accepts Friend Request
+  User-->Server:Request Accepted
+  Server->>FriendsList:<color:#red>updateList()</color>
+  activate FriendsList
+  FriendsList-->Server:<color:#red>new list</color>
+  deactivate FriendsList
+  else Doesn't accept Friend Request
+  User-->Server:Request  Not Accepted
+  deactivate User
+  end
+  Server-->UserProfile-UI:<color:#red>user response</color>
+  activate UserProfile-UI
+  Player->UserProfile-UI:<color:#red>sendGift()</color>
+  UserProfile-UI->Inventory:<color:#red>showItems()</color>
+  activate Inventory
+  Inventory->ItemsList:<color:#red>updateList()</color>
+  deactivate Inventory
+  activate ItemsList
+  ItemsList-->UserProfile-UI:<color:#red>items</color>
+  deactivate ItemsList
+  Player->UserProfile-UI:<color:#red>chooseGift()</color>
+  UserProfile-UI->Item:<color:#red>changeItem()</color>
+  activate Item
+  Item-->UserProfile-UI:<color:#red>item</color>
+  deactivate Item
+  UserProfile-UI->Server:<color:#red>sendGift()</color>
+  Server->User:<color:#red>sendGift()</color>
+  activate User
+  User->Server:<color:#red>sendBackGift()</color>
+  deactivate User
+  Server-->UserProfile-UI:<color:#red>gift</color>
+  alt accepts gift
+  Player->UserProfile-UI:<color:#red>acceptGift()</color>
+  UserProfile-UI->Inventory:<color:#red>addGift()</color>
+  activate Inventory
+  note over Inventory:<color:#red>continues with\nΕύρεση αντικειμένων\nUse-case</color>
+  deactivate Inventory
+  else doesn't accept gift
+  Player->UserProfile-UI:<color:#red>rejectGift()
+  end
+  deactivate UserProfile-UI
+  else User Not Found
+  activate UserProfile-UI
+  Server-->UserProfile-UI:<color:#red>userNotFound</color>
+  deactivate UserProfile-UI
+  deactivate Server
+ end
+ else User Chooses to change profile picture
+ activate UserProfile-UI
+ Player->UserProfile-UI:choosesModProfile()
+ UserProfile-UI->PageUpdatingProfile-UI:show()
+ activate PageUpdatingProfile-UI
+ deactivate UserProfile-UI
+ Player->>PageUpdatingProfile-UI:uploadPhoto()
+ PageUpdatingProfile-UI-->Server:new photograph
+ activate Server
+ Server->>Server:storePhoto()
+ alt successful storing
+ Server-->PageUpdatingProfile-UI: success
+ else unsuccessful storing
+ Server-->PageUpdatingProfile-UI: failure
+ deactivate PageUpdatingProfile-UI
+ deactivate Server
+ end
+ else User Chooses to see a friend
+ Player->UserProfile-UI:chooseFriendsList()
+ activate UserProfile-UI
+ UserProfile-UI->>FriendsList:showList()
+ activate FriendsList
+ FriendsList-->UserProfile-UI:Friends List
+ deactivate FriendsList
+ Player->UserProfile-UI:chooseFriend()
+ UserProfile-UI->>User:showUser()
+ activate User
+ User-->UserProfile-UI:user profile
+ deactivate User
+ Player->UserProfile-UI:chooseAch()
+ UserProfile-UI->>Achievement:showAch()
+ activate Achievement
+ Achievement-->UserProfile-UI:achievements
+ deactivate Achievement
+ deactivate UserProfile-UI
+ else User Chooses to see his achievements
+ Player->UserProfile-UI: chooseAch()
+ activate UserProfile-UI
+ UserProfile-UI->>Achievement:showAch()
+ activate Achievement
+ Achievement-->UserProfile-UI:achievements
+ deactivate Achievement
+ deactivate UserProfile-UI
+ end 
+ deactivate Player
