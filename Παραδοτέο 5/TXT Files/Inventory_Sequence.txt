@@ -32,7 +32,7 @@ Inventory->ListOfBlueprints:<color:#red>showBlueprints()
 activate ListOfBlueprints
 ListOfBlueprints-->craftingPage:<color:#red>blueprints
 deactivate ListOfBlueprints
-alt Player adds inactive blueprint
+alt 5. Player adds inactive blueprint
 Player->craftingPage:<color:#red>choosesInactiveBlueprint()
 craftingPage->Inventory:<color:#red>addInactiveBlueprint()
 Inventory->Inventory:<color:#red>doesPlayerHaveEnoughCoins()
@@ -40,13 +40,13 @@ Inventory->Inventory:<color:#red>doesPlayerHaveEnoughCoins()
 activate Blueprint
 Inventory->Blueprint:<color:#red>activateBlueprint()
 deactivate Blueprint
-else Player adds active blueprint
+else 5.1 Player adds active blueprint
 Player->craftingPage:<color:#red>choosesActiveBlueprint()
 end
 Player->craftingPage:<color:#red>selectPosForItem()
 craftingPage->Inventory:<color:#red>checkPosForItem()
 Inventory->Inventory:<color:#red>isThereAnotherItemInPos()
-opt there is another item in the selected position
+opt There is another item in the selected position
 Inventory->Item:<color:#red>removeItem()
 activate Item
 end
@@ -84,9 +84,10 @@ Inventory->Inventory:removeMaterials()
 
   else 3.1 Player chooses item to see its blueprint
 
- craftingPage->Item:selectItem()
+Player->craftingPage:<color:#red>selectItem()
  activate craftingPage
  activate Item
+ craftingPage->Item:<color:#red>getItem()
  
  
 
@@ -105,11 +106,14 @@ deactivate Inventory-UI
 
 
 else 3.2 Player chooses item that already exists in position
-craftingPage->Item:<color:#red>selectItem()
+Player->craftingPage:<color:#red>selectItem()
+activate craftingPage
 activate Item
+craftingPage->Item:<color:#red>getItem()
 Item-->Inventory:<color:#red>item
 
-activate craftingPage
+
+
 activate Inventory
  Inventory->Inventory:<color:#red>areThereEnoughMaterials()
 
@@ -118,6 +122,7 @@ activate Inventory
 
 
 Inventory->Item:<color:#red>addItem()
+Item-->Inventory:<color:#red>item
 
 
 Inventory<-Item:<color:#red>removeMaterials()
