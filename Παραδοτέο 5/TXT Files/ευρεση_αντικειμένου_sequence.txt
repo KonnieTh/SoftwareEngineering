@@ -1,0 +1,90 @@
+title ευρεση αντικειμένου
+
+
+actor Player
+participant GameScreen-UI
+participant Item
+participant DiscardPage
+participant Inventory
+participant MysteryItem
+
+
+Player->GameScreen-UI:founds Item
+activate GameScreen-UI
+GameScreen-UI->Item:interact()
+activate Item
+Item->GameScreen-UI:showMessage(want to pick it up?)
+
+deactivate Item
+
+alt mystery item
+
+
+
+
+GameScreen-UI->Inventory:gotSpace()
+activate Inventory
+alt no space
+Inventory-->GameScreen-UI:showMessage(not enough space)
+deactivate Inventory
+GameScreen-UI->GameScreen-UI:showMessage(want to trade?)
+
+
+GameScreen-UI->DiscardPage:showPage()
+activate DiscardPage
+DiscardPage->Inventory:tradeItems()
+activate Inventory
+deactivate DiscardPage
+
+else got enough space
+Inventory->Inventory:addItem()
+end 
+Inventory->MysteryItem:checkEffect()
+activate MysteryItem
+
+alt positive effect
+MysteryItem->Inventory:addValuableItem()
+else  negative effect
+MysteryItem->Inventory:destroyItems()
+end 
+deactivate MysteryItem
+
+else materials
+
+GameScreen-UI->Inventory:gotSpace()
+alt no space
+
+
+Inventory-->GameScreen-UI:showMessage(not enough space)
+deactivate Inventory
+
+GameScreen-UI->GameScreen-UI:showMessage(want to trade?)
+
+
+GameScreen-UI->DiscardPage:showPage()
+activate DiscardPage
+DiscardPage->Inventory:tradeMaterials()
+activate Inventory
+deactivate DiscardPage
+
+else got enough space
+Inventory->Inventory:addMaterials()
+end
+Inventory->Inventory:canPlayerCraftItem()
+
+
+deactivate Inventory
+
+Inventory->GameScreen-UI:showMessage(you can craft "Item name")
+else Blueprint
+
+GameScreen-UI->Inventory:addBlueprint()
+activate Inventory
+Inventory->Inventory:canPlayerCraftItem()
+
+Inventory->GameScreen-UI:showMessage(you can craft "Item name")
+deactivate Inventory
+
+
+
+end

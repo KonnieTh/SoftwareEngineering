@@ -1,0 +1,111 @@
+title chat
+
+actor Player
+participant global chat
+
+participant team chat
+participant chat box
+participant User
+participant list Of live players
+participant list of commands
+participant ranking list
+participant trophies list
+participant offers list
+participant Eshop
+participant createTeamWindow
+
+alt global chat
+Player->global chat:openChat()
+activate global chat
+global chat->global chat:retriveMessages()
+global chat-->global chat:show()
+
+
+else team chat
+
+Player->team chat:openChat()
+activate team chat
+team chat->team chat:keepTeamUsers()
+team chat->global chat:retriveMessages()
+
+global chat-->team chat:show()
+
+
+deactivate team chat
+
+
+
+alt types "@"
+Player-->chat box:types "@"
+activate chat box
+loop 
+chat box->User:isLive()
+activate User
+deactivate chat box
+User->list Of live players:showToList()
+activate list Of live players
+deactivate User
+end
+Player-->list Of live players:chooses player
+deactivate list Of live players
+Player-->chat box:types message
+activate chat box
+chat box->global chat:checkViability()
+deactivate chat box
+
+alt message ok
+activate User
+global chat->User:sentTo()*
+deactivate User
+else message not ok
+global chat->global chat:banMessage()
+global chat->User:banUser()
+list of commands->ranking list:info
+end
+
+else types "/"
+Player-->chat box:types "/"
+activate chat box
+chat box->list of commands:openCommands()
+activate list of commands
+deactivate chat box
+
+alt /rankings
+loop
+list of commands->User:retrieveRank()
+activate User
+User->ranking list:showToList()
+activate ranking list
+deactivate User
+end
+
+deactivate ranking list
+
+else /offers username
+list of commands->Eshop:retrieveOffers()
+activate Eshop
+Eshop->offers list:showToList()
+activate offers list
+deactivate Eshop
+
+else /trophies username
+deactivate offers list
+list of commands->User:retrieveAchievements()
+activate User
+User->trophies list:showToList()
+activate trophies list
+deactivate User
+end 
+end
+deactivate trophies list
+deactivate list of commands
+deactivate global chat
+
+else 
+activate createTeamWindow
+Player-->createTeamWindow:chooses Players for his team chat
+createTeamWindow->createTeamWindow:submitTeamName()
+createTeamWindow->createTeamWindow:new TextChannel*
+deactivate createTeamWindow
+end
+***
