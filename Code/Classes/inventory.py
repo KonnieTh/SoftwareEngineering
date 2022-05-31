@@ -9,13 +9,28 @@ class Inventory:
     def craft(self,item): #craft item by calling craft(item_name)
         pass
 
+    def getBlueprints(self):
+        pass
+
+    def doesPlayerHaveEnoughCoins(self):
+        pass
+    
+    def isThereAnotherItemInPos(self):
+        pass
+
+    def removeItem(self,item): #remove an item
+        if(self.__itemDict[item]>0):
+            self.__itemDict[item]-=1
+        else:
+            print("ERROR")
+
     def checkIfMaterialsAreMissing(self,material,num):
         if(self.__materialDict[material]>=num):
             return True
         else:
             return False
 
-    def addItem(self,item): #add a specific amount of a material
+    def addItem(self,item): #add an item
         self.__itemDict[item]+=1
 
     def removeMaterials(self,material,num): #remove a specific amount of a material
@@ -46,38 +61,9 @@ class Inventory:
     def canPlayerCraftNewItem(self):
         pass
 
-    def chooseMateriaslForTrade(self):
-        pass#?????
-
-    def enoughMateriaslForTrade(self,material,num):
-        pass #idio me check if materials are missing
-
     def addMaterials(self,material,num): #add a specific amount of a material
         self.__materialDict[material]+=num
 
-    def doesPlayerHaveRevivalToken(self):
-        if self.revival_token>0:
-            return True
-        else:
-            return False
-
-    def removeTokenFromInventory(self):
-        pass
-
-    def tradeItems(self):
-        pass
-
-    def addValuableItem(self):
-        pass
-
-    def destroyItems(self):
-        pass
-
-    def tradeMaterials(self):
-        pass
-
-    def addBlueprint(self):
-        pass
 
     
 
