@@ -2,6 +2,7 @@ class Blueprint():
     def __init__(self,itemTag):
         self.__list_of_materials = []
         self.itemTag=itemTag
+        self.isActive=True
     
         if(self.itemTag=="gum_gun"):
            self.__list_of_materials.append("")
@@ -22,3 +23,9 @@ class Blueprint():
     
     def getBlueprint(self):
         return  self.__list_of_materials
+
+    def activateBlueprint(self):
+        self.isActive=True
+
+    def deactivateBlueprint(self):
+        self.isActive=False

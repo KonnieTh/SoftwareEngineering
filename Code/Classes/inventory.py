@@ -71,3 +71,5 @@ class Inventory:
     def addMaterials(self,material,num): #adds a specific amount of a material
         self.__materialDict[material]+=num
 
+    def addItemToPos(self,item,position): #adds blueprint in a specific spot in crafting page
+        self.pos[position]=item
