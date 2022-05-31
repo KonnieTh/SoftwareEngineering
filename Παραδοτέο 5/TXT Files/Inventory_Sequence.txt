@@ -1,25 +1,32 @@
 title Inventory Sequence Diagram
 
 actor Player
-participant gameScreen
-participant Inventory
+participant GameScreen
+
+
 participant Inventory-UI
+
+participant Inventory
+
+
+
+
+
 participant craftingPage
 participant Trade2/1Page
 participant Item
 participant Blueprint
 participant ListOfBlueprints
 
-Player->gameScreen:openInventory()
 activate Player
-activate gameScreen
-
-gameScreen->Inventory-UI:openInventoryPage()
-deactivate gameScreen
+Player->GameScreen:selectInventoryPage()
+activate GameScreen
+GameScreen->Inventory-UI:showInventoryPage()
 activate Inventory-UI
+deactivate GameScreen
  alt 1. Crafting
- Player->Inventory-UI:selectCraftingPage()
- Inventory-UI->craftingPage:openCraftingPage()
+Player->Inventory-UI:selectCraftingPage()
+ Inventory-UI->craftingPage:showCraftingPage()
  activate craftingPage
  deactivate Inventory-UI
 
@@ -32,7 +39,7 @@ Inventory->ListOfBlueprints:<color:#red>showBlueprints()
 activate ListOfBlueprints
 ListOfBlueprints-->craftingPage:<color:#red>blueprints
 deactivate ListOfBlueprints
-alt Player adds inactive blueprint
+alt 5. Player adds inactive blueprint
 Player->craftingPage:<color:#red>choosesInactiveBlueprint()
 craftingPage->Inventory:<color:#red>addInactiveBlueprint()
 Inventory->Inventory:<color:#red>doesPlayerHaveEnoughCoins()
@@ -40,13 +47,13 @@ Inventory->Inventory:<color:#red>doesPlayerHaveEnoughCoins()
 activate Blueprint
 Inventory->Blueprint:<color:#red>activateBlueprint()
 deactivate Blueprint
-else Player adds active blueprint
+else 5.1 Player adds active blueprint
 Player->craftingPage:<color:#red>choosesActiveBlueprint()
 end
 Player->craftingPage:<color:#red>selectPosForItem()
 craftingPage->Inventory:<color:#red>checkPosForItem()
 Inventory->Inventory:<color:#red>isThereAnotherItemInPos()
-opt there is another item in the selected position
+opt There is another item in the selected position
 Inventory->Item:<color:#red>removeItem()
 activate Item
 end
@@ -84,20 +91,21 @@ Inventory->Inventory:removeMaterials()
 
   else 3.1 Player chooses item to see its blueprint
 
- craftingPage->Item:selectItem()
+Player->craftingPage:<color:#red>selectItem()
  activate craftingPage
  activate Item
+ craftingPage->Item:<color:#red>getItem()
  
  
 
  Item->Blueprint:getBlueprint()
  deactivate Item
   activate Blueprint
-  activate Inventory-UI
+ 
 
- Blueprint->Inventory-UI:showBlueprint()
+ Blueprint->craftingPage:showBlueprint()
   deactivate craftingPage
-deactivate Inventory-UI
+
  
 
  deactivate Blueprint
@@ -105,11 +113,15 @@ deactivate Inventory-UI
 
 
 else 3.2 Player chooses item that already exists in position
-craftingPage->Item:<color:#red>selectItem()
-activate Item
-Item-->Inventory:<color:#red>item
-
+Player->craftingPage:<color:#red>selectItem()
 activate craftingPage
+activate Item
+craftingPage->Item:<color:#red>getItem()
+Item-->Inventory:<color:#red>item
+deactivate craftingPage
+
+
+
 activate Inventory
  Inventory->Inventory:<color:#red>areThereEnoughMaterials()
 
@@ -118,6 +130,7 @@ activate Inventory
 
 
 Inventory->Item:<color:#red>addItem()
+Item-->Inventory:<color:#red>item
 
 
 Inventory<-Item:<color:#red>removeMaterials()
@@ -125,13 +138,16 @@ deactivate Item
 
 
   else 3.1 Some materials are missing
- activate Inventory-UI
- Inventory->Inventory-UI:<color:#red>cancelCrafting()
+
+ Inventory->craftingPage:<color:#red>cancelCrafting()
+ activate craftingPage
+ 
 
  deactivate Inventory
  deactivate Inventory-UI
   end 
 end
+deactivate craftingPage
   else 1.1 Dismantling
    
    Player->Inventory-UI:choosesDismantle()
@@ -162,12 +178,13 @@ end
   Inventory->Inventory:addMaterials()
   Inventory->Inventory:removeMaterials()
  Inventory->Inventory:canPlayerCraftNewItem()
-  Inventory->Inventory-UI:showNotification()
-    activate Inventory-UI
+  Inventory->Trade2/1Page:showNotification()
+  activate Trade2/1Page
   else 1.2.5.1 Not enough materials for Trade
-  Inventory->Inventory-UI:cancelTrade()
+  Inventory->Trade2/1Page:cancelTrade()
   deactivate Inventory-UI
   deactivate Inventory
+  deactivate Trade2/1Page
   end
   end
   deactivate Player
