@@ -1,10 +1,16 @@
 title Inventory Sequence Diagram
 
 actor Player
+participant GameScreen
+
+
+participant Inventory-UI
 
 participant Inventory
 
-participant Inventory-UI
+
+
+
 
 participant craftingPage
 participant Trade2/1Page
@@ -13,12 +19,14 @@ participant Blueprint
 participant ListOfBlueprints
 
 activate Player
-
-Player->Inventory-UI:openInventoryPage()
+Player->GameScreen:selectInventoryPage()
+activate GameScreen
+GameScreen->Inventory-UI:showInventoryPage()
 activate Inventory-UI
+deactivate GameScreen
  alt 1. Crafting
-Inventory-UI->Inventory-UI:selectCraftingPage()
- Inventory-UI->craftingPage:openCraftingPage()
+Player->Inventory-UI:selectCraftingPage()
+ Inventory-UI->craftingPage:showCraftingPage()
  activate craftingPage
  deactivate Inventory-UI
 
