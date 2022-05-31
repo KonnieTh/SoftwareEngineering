@@ -1,0 +1,53 @@
+title Statistics sequence-diagram
+
+actor Player
+
+participant StartingStatsScreen-UI
+participant DefineSearchScreen-UI
+participant User
+participant Server
+participant TypesOfGraphPage-UI
+
+activate Player
+Player->StartingStatsScreen-UI:chooses
+activate StartingStatsScreen-UI
+StartingStatsScreen-UI->Player:showStatSamples()
+
+alt 3. - 5. Player chooses stats among friends
+	StartingStatsScreen-UI->User:reqFriendsList()
+    activate User
+    User-->StartingStatsScreen-UI:FriendsList
+    deactivate User
+	Player->StartingStatsScreen-UI:chooseStatSample(friends)
+else 3.1. Player chooses Stats among all players
+	Player->StartingStatsScreen-UI: choosesAll
+end
+
+StartingStatsScreen-UI->DefineSearchScreen-UI:returnSample()
+activate DefineSearchScreen-UI
+deactivate StartingStatsScreen-UI
+
+alt 7. Player fills entire form
+	Player->DefineSearchScreen-UI:setStatRequested(characteristic, timeLim)
+else 7.1.1. Player does not set time limit
+	Player->DefineSearchScreen-UI:setStatRequested(characteristic)
+end 
+
+DefineSearchScreen-UI->Server:formQuery()
+deactivate DefineSearchScreen-UI
+activate Server
+Server-->StartingStatsScreen-UI:findAndPresentData()
+deactivate Server
+activate StartingStatsScreen-UI
+Player<--StartingStatsScreen-UI:display
+StartingStatsScreen-UI->TypesOfGraphPage-UI:show()
+deactivate StartingStatsScreen-UI
+activate TypesOfGraphPage-UI
+
+alt 11. Player chooses type of graph and path
+    Player->TypesOfGraphPage-UI:choosesAndSetsPath()
+    TypesOfGraphPage-UI->TypesOfGraphPage-UI:generateAndSaveGraph(graph, path)
+else 11.1. Player Does not set path or graph type
+	    TypesOfGraphPage-UI->TypesOfGraphPage-UI:generateAndSaveGraph(defaylts)
+end
+deactivate TypesOfGraphPage-UI
