@@ -93,11 +93,11 @@ Player->craftingPage:<color:#red>selectItem()
  Item->Blueprint:getBlueprint()
  deactivate Item
   activate Blueprint
-  activate Inventory-UI
+ 
 
- Blueprint->Inventory-UI:showBlueprint()
+ Blueprint->craftingPage:showBlueprint()
   deactivate craftingPage
-deactivate Inventory-UI
+
  
 
  deactivate Blueprint
