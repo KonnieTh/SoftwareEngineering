@@ -1,0 +1,155 @@
+title Online Co-op Sequence diagram
+
+actor Player
+
+participant StartignScreen-UI
+participant Co-opModeScreen-UI
+participant Server
+participant ServerRoom
+
+participant LevelFile
+participant AvailableLevels
+activate Player
+
+Player->StartignScreen-UI:chose()
+activate StartignScreen-UI
+StartignScreen-UI->Co-opModeScreen-UI:dislpay()
+activate Co-opModeScreen-UI
+deactivate StartignScreen-UI
+alt 3. Player chooses to type ID of room
+  Player->Co-opModeScreen-UI:typesID()
+  Co-opModeScreen-UI->Server:examineID()
+  activate Server
+  alt 4.1. ID is valid
+      Server->ServerRoom:roomFound()
+      deactivate Server
+      activate ServerRoom 
+      ServerRoom-->Co-opModeScreen-UI:appear()
+      Player->Co-opModeScreen-UI:connectToRoom()
+      alt 5. room requires password
+        Player->Co-opModeScreen-UI:typesPswd()
+        Co-opModeScreen-UI->ServerRoom:canPlayerConnect()
+        deactivate ServerRoom
+        alt 7. Player can connect
+          ServerRoom-->Player:addPlayer()
+          activate ServerRoom
+          ServerRoom->Player:<color:#red>presentChoice(inviteFriends)
+          alt 8. Choose to invite friend
+          	Player->ServerRoom:<color:#red>invitedFriends()
+            alt 11. ServerRoom adds invited players
+            	ServerRoom->ServerRoom:<color:#red>invitePlayer()
+                alt 13. - 17. Player chooses to turn on mic
+                    ServerRoom->Player:<color:#red>presentChoice(turnOnMic)
+                    Player->ServerRoom:<color:#red>turnOnMic()
+                    ServerRoom->ServerRoom:<color:#red>startVoiceChat()
+                    Player->ServerRoom:<color:#red>pressStart()
+                    ServerRoom->ServerRoom:<color:#red>checkPlayersAndStart()
+                else 14.1. player does not turn on mic 
+                	ServerRoom->ServerRoom:<color:#red>startVoiceChat(without this.User)
+                end
+            else 11.1. Not enough space for more players
+            	ServerRoom->ServerRoom:<color:#red>errorOccured()
+                ServerRoom-->Player:<color:#red>errorMessage
+            else 11.2. Not enough space for all invited players
+            	ServerRoom->ServerRoom:<color:#red>invitePlayer()
+                ServerRoom->ServerRoom:<color:#red>errorOccured()
+                ServerRoom-->Player:<color:#red>errorMessage
+            end
+          else 8.1. Player Does not choose to invite friend
+          
+          end
+        else 7.1. Wrong password or not enough space
+        ServerRoom->ServerRoom:errorOccured()
+        ServerRoom-->Player:errorMessage
+        deactivate ServerRoom
+        end 
+        else 5.1 else
+          alt enough space
+              ServerRoom->Player:addPlayer()
+              activate ServerRoom
+          else else
+              ServerRoom->ServerRoom:errorOccured()
+              ServerRoom-->Player:errorMessage
+              deactivate ServerRoom
+          end
+      end 
+  else 4. else
+  activate Server
+      Server->Server:errorOccured()
+      Server-->Player:errorMessage
+            deactivate Server
+
+  end 
+  
+else 3.1.1. Player chooses level created by other player
+	Player->Co-opModeScreen-UI:chose()
+    Co-opModeScreen-UI->AvailableLevels:getChosenLevel()
+    activate AvailableLevels
+    AvailableLevels-->LevelFile:returnReqRoom()
+    activate LevelFile
+    deactivate AvailableLevels
+    LevelFile->Server:downloadLevel()
+    deactivate LevelFile
+    activate Server
+    alt 3.1.2. Level Downloaded
+      Server-->Player:successDownloading
+      activate ServerRoom
+      Player->ServerRoom:startGame()
+      deactivate ServerRoom
+    else 3.1.2.1. level couldn't download
+      Server->Server:errorOccured()
+      Server-->Player:errorMessage
+      deactivate Server
+    end 
+
+else 3.2. Player chooses room from list
+	activate Server
+    activate ServerRoom
+	      Server->ServerRoom:roomFound()
+          deactivate Server
+      ServerRoom->Co-opModeScreen-UI:display
+      deactivate ServerRoom
+      Player->Co-opModeScreen-UI:connectToRoom()
+      alt 5. room requires password
+        Player->Co-opModeScreen-UI:typesPswd()
+        Co-opModeScreen-UI->ServerRoom:canPlayerConnect()
+        activate ServerRoom
+        alt 7. Player can connect
+          ServerRoom->Player:addPlayer()
+        else 7.1. Wrong password or not enough space
+        ServerRoom->ServerRoom:errorOccured()
+        ServerRoom-->Player:errorMessage
+        deactivate ServerRoom
+        end 
+        else 5.1 else
+          alt enough space
+              ServerRoom->Player:addPlayer()
+              activate ServerRoom
+          else else
+              ServerRoom->ServerRoom:errorOccured()
+              ServerRoom-->Player:errorMessage
+              deactivate ServerRoom
+          end
+      end 
+
+else 3.3.1. Player chooses to create room
+	alt 3.3.2. Server can host 1 more room
+    	opt 3.3.3. player chooses private room
+        	Player->Co-opModeScreen-UI:setsPswd()
+            Co-opModeScreen-UI->ServerRoom:pswdAssigned()
+            activate ServerRoom
+            deactivate Co-opModeScreen-UI
+            loop
+    		ServerRoom->ServerRoom:isRoomFull()
+            end 
+            ServerRoom->Server:startGame()
+            deactivate ServerRoom
+            activate Server
+        end     
+    else 3.3.2.1. Server can't host more rooms
+    	Server->Server:errorOccured()
+        Server-->Player:errorMessage
+        deactivate Server
+    end 
+
+end
