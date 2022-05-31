@@ -17,8 +17,8 @@ participant createTeamWindow
 alt global chat
 Player->global chat:openChat()
 activate global chat
-global chat->global chat:retriveMessages()
-global chat-->global chat:show()
+global chat-#red:2>global chat:retriveMessages()
+global chat--#red:2>global chat:show()
 
 
 else team chat
@@ -26,9 +26,9 @@ else team chat
 Player->team chat:openChat()
 activate team chat
 team chat->team chat:keepTeamUsers()
-team chat->global chat:retriveMessages()
+team chat-#red:2>global chat:retriveMessages()
 
-global chat-->team chat:show()
+global chat--#red:2>team chat:show()
 
 
 deactivate team chat

@@ -13,7 +13,7 @@ Player->GameScreen-UI:founds Item
 activate GameScreen-UI
 GameScreen-UI->Item:interact()
 activate Item
-Item->GameScreen-UI:showMessage(want to pick it up?)
+Item-#red:1>GameScreen-UI:showMessage(want to pick it up?)
 
 deactivate Item
 
@@ -25,9 +25,9 @@ alt mystery item
 GameScreen-UI->Inventory:gotSpace()
 activate Inventory
 alt no space
-Inventory-->GameScreen-UI:showMessage(not enough space)
+Inventory--#red:1>GameScreen-UI:showMessage(not enough space)
 deactivate Inventory
-GameScreen-UI->GameScreen-UI:showMessage(want to trade?)
+GameScreen-UI-#red:1>GameScreen-UI:showMessage(want to trade?)
 
 
 GameScreen-UI->DiscardPage:showPage()
@@ -55,10 +55,10 @@ GameScreen-UI->Inventory:gotSpace()
 alt no space
 
 
-Inventory-->GameScreen-UI:showMessage(not enough space)
+Inventory--#red:1>GameScreen-UI:showMessage(not enough space)
 deactivate Inventory
 
-GameScreen-UI->GameScreen-UI:showMessage(want to trade?)
+GameScreen-UI-#red:1>GameScreen-UI:showMessage(want to trade?)
 
 
 GameScreen-UI->DiscardPage:showPage()
@@ -73,16 +73,17 @@ end
 Inventory->Inventory:canPlayerCraftItem()
 
 
-deactivate Inventory
 
-Inventory->GameScreen-UI:showMessage(you can craft "Item name")
+
+Inventory-#red:1>GameScreen-UI:showMessage(you can craft "Item name")
+deactivate Inventory
 else Blueprint
 
 GameScreen-UI->Inventory:addBlueprint()
 activate Inventory
 Inventory->Inventory:canPlayerCraftItem()
 
-Inventory->GameScreen-UI:showMessage(you can craft "Item name")
+Inventory-#red:1>GameScreen-UI:showMessage(you can craft "Item name")
 deactivate Inventory
 
 
