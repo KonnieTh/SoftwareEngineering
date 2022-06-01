@@ -37,7 +37,7 @@ deactivate StartingScreen-UI
    deactivate Inventory
    else 7.1 user can't buy chosen item
    Server->Server:errorOccured()
-   Player<--Server:printErr
+   ShopMenu-UI<--Server:printErr
    deactivate Server
    end
    
@@ -82,7 +82,7 @@ deactivate StartingScreen-UI
     
     else 6.1. user cannot buy item
     Server->Server:raiseErr()
-    Player<--Server:printErr
+    ShopMenu-UI<--Server:printErr
     deactivate Server
     end 
    else 3.1.4.1. user makes bid
@@ -116,7 +116,7 @@ MakeOfferForm-UI->Server:publishOffer()
   Server->ListOfPlayersOffers:addNewOffer()  
   else 3.2.5.1. cannot make offer
   Server->Server:raiseErr()
-  Player<--Server:printErr
+  ShopMenu-UI<--Server:printErr
   deactivate Server
  end
  end 
