@@ -1,9 +1,13 @@
+from datetime import datetime
+import datetime
 
 class Offer:
-    def __init__(self,seller,buyer,itemToSell,buyOutPrice,bidPrice,timeOfCreation):
+    def __init__(self,seller,itemToSell,buyOutPrice,startingBid):
         self.seller = seller #seller must be of type User
-        self.buyer = buyer #buyer must be of type User
         self.itemToSell = itemToSell #itemToSell must be of type Item
         self.buyOutPrice = buyOutPrice
-        self.bidPrice = bidPrice
-        self.timeOfCreation = timeOfCreation
+        self.startingBid = startingBid
+        self.timeOfCreation = datetime.datetime.now()
+
+
+        

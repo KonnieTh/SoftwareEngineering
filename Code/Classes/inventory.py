@@ -2,11 +2,11 @@ from Blueprint import Blueprint
 
 class Inventory:
     def __init__(self):
-        self.__coins = 0
+        self.coins = 0
         self.__size = 10
         self.pos={1:'',2:'',3:'',4:''} #positions to place blueprints
         self.__materialDict = {'cables':0,'gears':0,'metalScraps':0,'oil':0,'springs':0}
-        self.__itemDict = {'gum_gun':0,'stun_gun':0,'EMP_grenade':0,'time_travel_grenade':0,'time_freeze_grenade':0,'life_potion':0,'speed_potion':0,'stamina_potion':0}
+        self.itemDict = {'gum_gun':0,'stun_gun':0,'EMP_grenade':0,'time_travel_grenade':0,'time_freeze_grenade':0,'life_potion':0,'speed_potion':0,'stamina_potion':0}
     
     def doesPlayerHaveEnoughCoins(self,num): #returns True if player has enough coins
         if(self.__coins>=num):

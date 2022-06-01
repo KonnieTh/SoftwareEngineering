@@ -1,11 +1,10 @@
-
 class Hint:
-    def __init__(self,hintTitle,tags,hintDescription,likes,dislikes):
+    def __init__(self,hintTitle,tags,hintDescription):
         self.hintTitle = hintTitle
         self.tags = tags
         self.hintDescription = hintDescription
-        self.likes = likes
-        self.dislikes = dislikes
+        self.likes = 0
+        self.dislikes = 0
 
 
 
