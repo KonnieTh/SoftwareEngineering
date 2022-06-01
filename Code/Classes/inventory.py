@@ -9,7 +9,7 @@ class Inventory:
         self.itemDict = {'gum_gun':0,'stun_gun':0,'EMP_grenade':0,'time_travel_grenade':0,'time_freeze_grenade':0,'life_potion':0,'speed_potion':0,'stamina_potion':0}
     
     def doesPlayerHaveEnoughCoins(self,num): #returns True if player has enough coins
-        if(self.__coins>=num):
+        if(self.coins>=num):
             return True
         else:
             return False
@@ -21,8 +21,8 @@ class Inventory:
             return False
 
     def removeItem(self,item): #removes 1 of the given item
-        if(self.__itemDict[item]>0):
-            self.__itemDict[item]-=1
+        if(self.itemDict[item]>0):
+            self.itemDict[item]-=1
         else:
             print("ERROR")
     
@@ -41,7 +41,7 @@ class Inventory:
         return True
 
     def addItem(self,item): #adds 1 of the given item
-        self.__itemDict[item]+=1
+        self.itemDict[item]+=1
 
     def removeMaterials(self,item): #removes the materials the item consists of
         blueprint=Blueprint(item)
@@ -61,8 +61,8 @@ class Inventory:
         for i in self.__materialDict:
             if self.__materialDict[i]>0:
                 spaces+=1
-        for j in self.__itemDict:
-            if self.__itemDict[j]>0:
+        for j in self.itemDict:
+            if self.itemDict[j]>0:
                 spaces+=1
         if self.__size>spaces:
             return True
@@ -70,7 +70,7 @@ class Inventory:
             return False
 
     def canPlayerCraftNewItem(self): #returns True if after the addition of some materials the player can craft a new item
-        for item in self.__itemDict:
+        for item in self.itemDict:
             if self.checkIfMaterialsAreMissing(item):
                 return True
         return False
