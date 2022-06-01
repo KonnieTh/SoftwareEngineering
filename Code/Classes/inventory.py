@@ -25,6 +25,12 @@ class Inventory:
             self.__itemDict[item]-=1
         else:
             print("ERROR")
+    
+    def areThereEnoughMaterials(self,material,num): #Trade-returns True if there are at least num materias in the inventory
+        if(self.__materialDict[material]>=num):
+            return True
+        else:
+            return False
 
     def checkIfMaterialsAreMissing(self,item): #returns True if there are enough materials for the item to be made
         blueprint=Blueprint(item)
@@ -67,6 +73,7 @@ class Inventory:
         for item in self.__itemDict:
             if self.checkIfMaterialsAreMissing(item):
                 return True
+        return False
 
     def addMaterials(self,material,num): #adds a specific amount of a material
         self.__materialDict[material]+=num
