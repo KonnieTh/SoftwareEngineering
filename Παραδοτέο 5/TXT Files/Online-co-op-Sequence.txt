@@ -6,7 +6,6 @@ participant StartignScreen-UI
 participant Co-opModeScreen-UI
 participant Server
 participant ServerRoom
-participant Error
 
 participant LevelFile
 participant AvailableLevels
@@ -41,7 +40,7 @@ alt 3. Player chooses to type ID of room
             	ServerRoom->ServerRoom:<color:#red>invitePlayer()
                 alt 13. - 17. Player chooses to turn on mic
                     ServerRoom->Player:<color:#red>presentChoice(turnOnMic)
-                    Player-->ServerRoom:<color:#red>turnOnMic()
+                    Player->ServerRoom:<color:#red>turnOnMic()
                     ServerRoom->ServerRoom:<color:#red>startVoiceChat()
                     Player->ServerRoom:<color:#red>pressStart()
                     ServerRoom->ServerRoom:<color:#red>checkPlayersAndStart()
@@ -49,69 +48,58 @@ alt 3. Player chooses to type ID of room
                 	ServerRoom->ServerRoom:<color:#red>startVoiceChat(without this.User)
                 end
             else 11.1. Not enough space for more players
-            	ServerRoom->Error:<color:#red>errorOccured()
-                activate Error
-                Error-->Player:<color:#red>errorMessage
-                deactivate Error
+            	ServerRoom->ServerRoom:<color:#red>errorOccured()
+                ServerRoom-->Player:<color:#red>errorMessage
             else 11.2. Not enough space for all invited players
             	ServerRoom->ServerRoom:<color:#red>invitePlayer()
-                ServerRoom->Error:<color:#red>errorOccured()
-                activate Error
-                Error->Player:<color:#red>errorMessage
-                deactivate Error
+                ServerRoom->ServerRoom:<color:#red>errorOccured()
+                ServerRoom-->Player:<color:#red>errorMessage
             end
           else 8.1. Player Does not choose to invite friend
           
           end
         else 7.1. Wrong password or not enough space
-        ServerRoom->Error:errorOccured()
-        activate Error
+        ServerRoom->ServerRoom:errorOccured()
+        ServerRoom-->Player:errorMessage
         deactivate ServerRoom
-        Error-->Player:errorMessage
-        deactivate Error
         end 
         else 5.1 else
           alt enough space
-              ServerRoom-->Player:addPlayer()
+              ServerRoom->Player:addPlayer()
               activate ServerRoom
           else else
-              ServerRoom->Error:errorOccured()
-              activate Error
+              ServerRoom->ServerRoom:errorOccured()
+              ServerRoom-->Player:errorMessage
               deactivate ServerRoom
-              Error-->Player:errorMessage
-              deactivate Error
           end
       end 
   else 4. else
   activate Server
-      Server->Error:errorOccured()
-      activate Error
-      deactivate Server
-      Error-->Player:errorMessage
-      deactivate Error
+      Server->Server:errorOccured()
+      Server-->Player:errorMessage
+            deactivate Server
+
   end 
   
 else 3.1.1. Player chooses level created by other player
 	Player->Co-opModeScreen-UI:chose()
     Co-opModeScreen-UI->AvailableLevels:getChosenLevel()
     activate AvailableLevels
-    AvailableLevels-->LevelFile:returnReqRom()
+    AvailableLevels-->LevelFile:returnReqRoom()
     activate LevelFile
     deactivate AvailableLevels
-    LevelFile-->Server:downloadLevel()
+    LevelFile->Server:downloadLevel()
     deactivate LevelFile
     activate Server
     alt 3.1.2. Level Downloaded
-      Server-->Player:successDownloading()
+      Server-->Player:successDownloading
       activate ServerRoom
       Player->ServerRoom:startGame()
       deactivate ServerRoom
     else 3.1.2.1. level couldn't download
-      Server->Error:errorOccured()
-      activate Error
+      Server->Server:errorOccured()
+      Server-->Player:errorMessage
       deactivate Server
-      Error-->Player:errorMessage
-      deactivate Error
     end 
 
 else 3.2. Player chooses room from list
@@ -119,7 +107,7 @@ else 3.2. Player chooses room from list
     activate ServerRoom
 	      Server->ServerRoom:roomFound()
           deactivate Server
-      ServerRoom-->Co-opModeScreen-UI:appear()
+      ServerRoom->Co-opModeScreen-UI:display
       deactivate ServerRoom
       Player->Co-opModeScreen-UI:connectToRoom()
       alt 5. room requires password
@@ -127,22 +115,20 @@ else 3.2. Player chooses room from list
         Co-opModeScreen-UI->ServerRoom:canPlayerConnect()
         activate ServerRoom
         alt 7. Player can connect
-          ServerRoom-->Player:addPlayer()
+          ServerRoom->Player:addPlayer()
         else 7.1. Wrong password or not enough space
-        ServerRoom->Error:errorOccured()
-        activate Error
+        ServerRoom->ServerRoom:errorOccured()
+        ServerRoom-->Player:errorMessage
         deactivate ServerRoom
-        Error-->Player:errorMessage
         end 
         else 5.1 else
           alt enough space
-              ServerRoom-->Player:addPlayer()
+              ServerRoom->Player:addPlayer()
               activate ServerRoom
           else else
-              ServerRoom->Error:errorOccured()
+              ServerRoom->ServerRoom:errorOccured()
+              ServerRoom-->Player:errorMessage
               deactivate ServerRoom
-              Error-->Player:errorMessage
-              deactivate Error
           end
       end 
 
@@ -161,11 +147,9 @@ else 3.3.1. Player chooses to create room
             activate Server
         end     
     else 3.3.2.1. Server can't host more rooms
-    	Server->Error:errorOccured()
-        activate Error
+    	Server->Server:errorOccured()
+        Server-->Player:errorMessage
         deactivate Server
-        Error-->Player:errorMessage
-        deactivate Error
     end 
 
 end

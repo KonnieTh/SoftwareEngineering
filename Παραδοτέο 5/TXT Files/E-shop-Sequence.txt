@@ -1,0 +1,122 @@
+
+title E-shop sequence diagram
+
+actor Player
+
+participant StartingScreen-UI
+participant ShopMenu-UI
+participant MakeOfferForm-UI
+participant Inventory
+participant AvailProductsList
+participant ListOfPlayersOffers
+participant AvailBidsList
+participant Server
+
+activate Player
+
+Player->StartingScreen-UI:enterShop()
+activate StartingScreen-UI
+
+StartingScreen-UI->ShopMenu-UI:show()
+activate ShopMenu-UI
+deactivate StartingScreen-UI
+
+  alt 3. user chooses to buy from store
+
+   ShopMenu-UI->AvailProductsList:display()
+   activate AvailProductsList
+   Player->AvailProductsList:chooseToBuy()
+   AvailProductsList->Server:publishPurchase()
+   activate Server
+   
+   alt 7. user bought item
+   Server->AvailProductsList:removeOfferFromList()
+   deactivate AvailProductsList
+      activate Inventory
+   Server->Inventory:updateInventory()
+   deactivate Inventory
+   else 7.1 user can't buy chosen item
+   Server->Server:errorOccured()
+   ShopMenu-UI<--Server:printErr
+   deactivate Server
+   end
+   
+ else 3.1 user chooses to buy from other player
+   ShopMenu-UI->ListOfPlayersOffers:display()
+   activate ListOfPlayersOffers
+   deactivate ShopMenu-UI
+   Player->ListOfPlayersOffers:chooseToBuy()
+   ListOfPlayersOffers->Server:publishPurchase()
+   activate Server
+   alt 3.1.4. user Buys Via Buyout
+   activate Inventory
+      Server->Inventory:checkFunds()
+      deactivate Inventory
+
+   alt 6. user can buy item
+   Server->ListOfPlayersOffers:removeOfferFromList()
+      activate Inventory
+   Server->Inventory:updateInventory()
+    deactivate Inventory
+    ShopMenu-UI->Player:<color:#red>displayOptions(retFunds, lotTicket)
+    activate ShopMenu-UI
+    Player-->ShopMenu-UI:<color:#red>chooses
+
+    alt 8. Player chooses lottery ticket
+    	Server->ShopMenu-UI:<color:#red>setAndDisplayMiniGame()
+		ShopMenu-UI->ShopMenu-UI:<color:#red>lotteryDraws()
+        alt 9. Player wins
+        	ShopMenu-UI->Server:<color:#red>playerWon(True)
+            activate Inventory
+            Server->Inventory:<color:#red>addRandItem()
+            deactivate Inventory
+        else 9.1. Player loses
+        	ShopMenu-UI->Server:<color:#red>playerWon(False)
+        end
+    else 8.1.1. - 8.1.2. Player chooses return funds
+    activate Inventory
+    	 Server->Inventory:<color:#red>returnFunds()
+         deactivate Inventory
+
+    end
+    
+    else 6.1. user cannot buy item
+    Server->Server:raiseErr()
+    ShopMenu-UI<--Server:printErr
+    deactivate Server
+    end 
+   else 3.1.4.1. user makes bid
+   ListOfPlayersOffers->Server:askForBidsList()
+   deactivate ListOfPlayersOffers
+   activate Server
+   activate Inventory
+   Server->Inventory:checksFunds()
+   deactivate Inventory
+   Server->AvailBidsList:returnAvailBids()
+   activate AvailBidsList
+   Player->AvailBidsList:makeBid()
+   AvailBidsList->Server:saveBid
+   deactivate AvailBidsList
+   deactivate Server
+   end 
+  else 3.2 user chooses to make offer
+  Player->ShopMenu-UI:makeOffer() 
+  ShopMenu-UI->MakeOfferForm-UI:display()
+  activate MakeOfferForm-UI
+  MakeOfferForm-UI->Inventory:showSellableItems()
+  activate Inventory
+  Inventory->MakeOfferForm-UI:returnChosenItem()
+  deactivate Inventory
+  Player->MakeOfferForm-UI:submitOffer()
+
+MakeOfferForm-UI->Server:publishOffer()
+  deactivate MakeOfferForm-UI
+  activate Server
+  alt 3.2.5. makingOfferSuccessful
+  Server->ListOfPlayersOffers:addNewOffer()  
+  else 3.2.5.1. cannot make offer
+  Server->Server:raiseErr()
+  ShopMenu-UI<--Server:printErr
+  deactivate Server
+ end
+ end 

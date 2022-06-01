@@ -1,29 +1,68 @@
-import Being
+import math
 import pygame
+from sys import exit
 
-#εδω θα έχουμε οτι γινεται στην οθόνη. Αν θελετε να τεσταρετε κατι καντε import την κλαση σας και τρεξτε τις μεθόδους που θέλετε.
-#εβαλα και εναν φακελο renders για οταν/αν χρειαστει να εμφανίσετε πραγματα στην οθόνη. Θα βαλετε τα .png σας εκει και θα τα καλείτε με το path τους.
+from Being import *
 
-#αυτο ειναι απλα ενα παραδειγμα για collision αγνοηστε το
 pygame.init()
-window = pygame.display.set_mode((250, 250))
-rect1 = pygame.Rect(*window.get_rect().center, 0, 0).inflate(75, 75)
-rect2 = pygame.Rect(0, 0, 75, 75)
+screen = pygame.display.set_mode((1280,720))
+pygame.display.set_caption('Area 15')
+clock = pygame.time.Clock()
+basic_font=pygame.font.Font(None,50)
 
-run = True
-while run:
+bg_surface = pygame.image.load('code\screens\images\GameBackground.jpg').convert()
+bg_surface = pygame.transform.scale(bg_surface, (1280, 720))
+alien_solid = pygame.image.load('code\screens\images\Alien.png').convert_alpha()
+alien_solid = pygame.transform.scale(alien_solid, (200, 200))
+scientist_solid = pygame.image.load('code\screens\images\BasicScientistAggroState_reverse.png').convert_alpha()
+scientist_solid = pygame.transform.scale(scientist_solid, (200, 200))
+
+alien = Alien(100)
+scientist = Scientist()
+
+alien_x_pos=100
+scientist_x_pos=1000
+scientist.speed = 1.2
+scientist_speed = scientist.speed
+
+
+
+
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            pygame.quit()
+            exit()
+    
+    screen.blit(bg_surface,(0,0)) #(0,0) is the position up left
+    
+    #keyboard movement
+    alien_speed = 0
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT:
+            alien_speed = -alien.speed
+        if event.key == pygame.K_RIGHT:
+            alien_speed = alien.speed    
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+            alien_speed = 0        
+    alien_x_pos += alien_speed
 
-    rect2.center = pygame.mouse.get_pos()
-    collide = rect1.colliderect(rect2)
-    color = (255, 0, 0) if collide else (255, 255, 255)
+    #scientist movement
+    
+    scientist_x_pos-= scientist_speed
 
-    window.fill(0)
-    pygame.draw.rect(window, color, rect1)
-    pygame.draw.rect(window, (0, 255, 0), rect2, 6, 1)
-    pygame.display.flip()
+    #collision
+    collision = alien.isDamaged(scientist_x_pos,alien_x_pos)
+    if collision:
+        alien.speed = 0
+        scientist_speed = 0
 
-pygame.quit()
-exit()
+    #boundaries
+    if(alien_x_pos>1200):
+        alien_x_pos=20
+    screen.blit(alien_solid,(alien_x_pos,340))
+    screen.blit(scientist_solid,(scientist_x_pos,320))
+
+    pygame.display.update()
+    clock.tick(60)

@@ -22,7 +22,7 @@ alt mystery item
 
 
 
-GameScreen-UI->Inventory:gotSpace()
+GameScreen-UI->Inventory:enoughSpace()
 activate Inventory
 alt no space
 Inventory--#red:1>GameScreen-UI:showMessage(not enough space)
@@ -51,7 +51,7 @@ deactivate MysteryItem
 
 else materials
 
-GameScreen-UI->Inventory:gotSpace()
+GameScreen-UI->Inventory:enoughSpace()
 alt no space
 
 
@@ -70,7 +70,7 @@ deactivate DiscardPage
 else got enough space
 Inventory->Inventory:addMaterials()
 end
-Inventory->Inventory:canPlayerCraftItem()
+Inventory->Inventory:canPlayerCraftNewItem()
 
 
 
