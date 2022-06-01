@@ -25,7 +25,7 @@ else team chat
 
 Player->team chat:openChat()
 activate team chat
-team chat->team chat:keepTeamUsers()
+team chat->team chat:getPlayerList()
 team chat-#red:2>global chat:retrieveMessages()
 
 global chat--#red:2>team chat:show()
@@ -38,14 +38,13 @@ deactivate team chat
 alt types "@"
 Player-->chat box:types "@"
 activate chat box
-loop 
+
 chat box->User:isLive()
 activate User
 deactivate chat box
 User->list Of live players:showToList()
 activate list Of live players
 deactivate User
-end
 Player-->list Of live players:chooses player
 deactivate list Of live players
 Player-->chat box:types message
@@ -55,7 +54,7 @@ deactivate chat box
 
 alt message ok
 activate User
-global chat->User:sentTo()*
+global chat->User:sendMessage()
 deactivate User
 else message not ok
 global chat->global chat:banMessage()
@@ -105,7 +104,7 @@ deactivate global chat
 else 
 activate createTeamWindow
 Player-->createTeamWindow:chooses Players for his team chat
-createTeamWindow->createTeamWindow:submitTeamName()
-createTeamWindow->createTeamWindow:new TextChannel*
+createTeamWindow->createTeamWindow:submitTeam()
+createTeamWindow->createTeamWindow:new TextChannel
 deactivate createTeamWindow
 end
