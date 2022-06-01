@@ -17,7 +17,7 @@ participant createTeamWindow
 alt global chat
 Player->global chat:openChat()
 activate global chat
-global chat-#red:2>global chat:retriveMessages()
+global chat-#red:2>global chat:retrieveMessages()
 global chat--#red:2>global chat:show()
 
 
@@ -26,7 +26,7 @@ else team chat
 Player->team chat:openChat()
 activate team chat
 team chat->team chat:keepTeamUsers()
-team chat-#red:2>global chat:retriveMessages()
+team chat-#red:2>global chat:retrieveMessages()
 
 global chat--#red:2>team chat:show()
 
@@ -60,7 +60,7 @@ deactivate User
 else message not ok
 global chat->global chat:banMessage()
 global chat->User:banUser()
-list of commands->ranking list:info
+
 end
 
 else types "/"
@@ -92,12 +92,13 @@ else /trophies username
 deactivate offers list
 list of commands->User:retrieveAchievements()
 activate User
-User->trophies list:showToList()
 activate trophies list
+User->trophies list:showToList()
+deactivate trophies list
 deactivate User
 end 
 end
-deactivate trophies list
+
 deactivate list of commands
 deactivate global chat
 
@@ -108,4 +109,3 @@ createTeamWindow->createTeamWindow:submitTeamName()
 createTeamWindow->createTeamWindow:new TextChannel*
 deactivate createTeamWindow
 end
-***
