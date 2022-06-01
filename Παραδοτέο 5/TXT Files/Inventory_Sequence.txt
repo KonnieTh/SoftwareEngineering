@@ -57,6 +57,7 @@ opt There is another item in the selected position
 Inventory->Item:<color:#red>removeItem()
 activate Item
 end
+Inventory->Inventory:<color:#red>addItemToPos()
 deactivate Item
 Inventory->Blueprint:<color:#red>deactivateBlueprint()
 activate Blueprint
@@ -66,6 +67,10 @@ deactivate Blueprint
   Player->craftingPage:<color:#red>chooseCraft()
   craftingPage->Inventory:<color:#red>craft()
   deactivate craftingPage
+  Inventory->Blueprint:<color:#red>getBlueprint()
+  activate Blueprint
+  Blueprint-->Inventory:<color:#red>blueprint
+  deactivate Blueprint
   Inventory->Inventory:checkIfMaterialsAreMissing()
  alt 3. Materials are not missing
 
@@ -74,9 +79,11 @@ activate Item
 Inventory->Item:addItem()
 Item-->Inventory:item
 deactivate Item
-
+Inventory->Blueprint:<color:#red>getBlueprint()
+activate Blueprint
+Blueprint-->Inventory:<color:#red>blueprint
 Inventory->Inventory:removeMaterials()
-
+deactivate Blueprint
 
 
   else 3.1 Some materials are missing
@@ -123,7 +130,7 @@ deactivate craftingPage
 
 
 activate Inventory
- Inventory->Inventory:<color:#red>areThereEnoughMaterials()
+ Inventory->Inventory:<color:#red>checkIfMaterialsAreMissing()
 
  alt 3. Materials are not missing
 
@@ -131,10 +138,14 @@ activate Inventory
 
 Inventory->Item:<color:#red>addItem()
 Item-->Inventory:<color:#red>item
-
-
-Inventory<-Item:<color:#red>removeMaterials()
 deactivate Item
+
+Inventory->Blueprint:<color:#red>getBlueprint()
+activate Blueprint
+Blueprint-->Inventory:<color:#red>blueprint
+deactivate Blueprint
+Inventory<-Inventory:<color:#red>removeMaterials()
+
 
 
   else 3.1 Some materials are missing
@@ -144,7 +155,6 @@ deactivate Item
  
 
  deactivate Inventory
- deactivate Inventory-UI
   end 
 end
 deactivate craftingPage
@@ -153,9 +163,15 @@ deactivate craftingPage
    Player->Inventory-UI:choosesDismantle()
     activate Inventory-UI
   
-  Inventory-UI->Inventory:dismantle()
+  Inventory-UI->Inventory:startDismantle()
   activate Inventory
   Inventory->Inventory:enoughSpace()
+    Inventory->Blueprint:<color:#red>getBlueprint()
+    activate Blueprint
+    Blueprint-->Inventory:<color:#red>blueprint
+    deactivate Blueprint
+    Inventory->Inventory:dismantle()
+
   alt 1.1.2 There is space in Inventory
   
   Inventory->Inventory:canPlayerCraftNewItem()
@@ -176,13 +192,16 @@ deactivate craftingPage
   Inventory->Inventory:areThereEnoughMaterials()
   alt 1.2.5 There are enough materials for Trade
   Inventory->Inventory:addMaterials()
+  Inventory->Blueprint:<color:#red>getBlueprint()
+activate Blueprint
+Blueprint-->Inventory:<color:#red>blueprint
+deactivate Blueprint
   Inventory->Inventory:removeMaterials()
  Inventory->Inventory:canPlayerCraftNewItem()
   Inventory->Trade2/1Page:showNotification()
   activate Trade2/1Page
   else 1.2.5.1 Not enough materials for Trade
   Inventory->Trade2/1Page:cancelTrade()
-  deactivate Inventory-UI
   deactivate Inventory
   deactivate Trade2/1Page
   end
