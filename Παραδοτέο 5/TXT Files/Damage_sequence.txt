@@ -1,0 +1,113 @@
+title Damage Sequence Diagram
+
+actor Player
+
+participant GameScreen-UI
+
+
+participant Alien
+participant Scientist
+
+
+participant StartOfLevel
+
+participant Checkpoint
+
+
+
+
+participant Inventory
+
+
+Player->GameScreen-UI:startGame()
+activate Player
+activate GameScreen-UI
+alt 1. Alien is damaged
+GameScreen-UI->Alien:isDamaged()
+activate Alien
+deactivate GameScreen-UI
+Alien->Alien:checkCauseOfDamage()
+
+
+alt 3. Alien is damaged by laser/acid
+Alien->Alien:removeLives(1)
+else 3.1.1 Alien falls off a cliff/into water
+Alien->Alien:removeLives(2)
+
+deactivate Alien
+
+else 3.2 Alien is damaged by darts
+activate Alien
+Alien->Alien:reduceSpeed()
+Alien->Alien:removeLives(1)
+deactivate Alien
+end
+activate Alien
+Alien->Alien:areThereAnyLivesLeft()
+deactivate Alien
+alt 3.1.2 Alien has lives left
+Alien-->GameScreen-UI:yes
+activate Alien
+activate GameScreen-UI
+activate Checkpoint
+GameScreen-UI->Checkpoint:movePlayerToCheckpoint()
+deactivate Checkpoint
+else 3.1.2 .1 Alien does not have any lives left
+Alien-->GameScreen-UI:no
+deactivate GameScreen-UI
+ 
+ activate Inventory
+Alien->Inventory:doesPlayerHaveRevivalToken() 
+deactivate Alien
+deactivate Inventory
+end
+
+
+alt 6. Alien doesn't use the revival token
+
+Inventory->StartOfLevel:returnPlayerToStartOfLevel()
+activate Inventory
+activate StartOfLevel
+
+Alien<-StartOfLevel:setLivesToOne()
+activate Alien
+deactivate StartOfLevel
+
+else 6.1 Alien uses revival token
+Inventory->GameScreen-UI:useToken()
+activate GameScreen-UI
+GameScreen-UI->Inventory:removeReviveToken()
+deactivate Inventory
+
+GameScreen-UI->Checkpoint:movePlayerToCheckpoint()
+deactivate GameScreen-UI
+activate Checkpoint
+
+
+Checkpoint->Alien:setLivesToMax()
+deactivate Checkpoint
+deactivate Alien
+end
+
+
+deactivate Player
+
+else 1.1 Alien is damaged by scientist
+
+Alien->Scientist:isCollided()
+activate Scientist
+activate Alien
+Scientist-->GameScreen-UI:yes
+activate GameScreen-UI
+deactivate Scientist
+GameScreen-UI->StartOfLevel:returnPlayerToStartOfLevel()
+deactivate GameScreen-UI
+activate StartOfLevel
+StartOfLevel->Alien:setLivesToMax()
+deactivate StartOfLevel
+deactivate Alien
+end
+
+
+
+
