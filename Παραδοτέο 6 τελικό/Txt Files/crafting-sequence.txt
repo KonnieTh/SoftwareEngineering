@@ -1,0 +1,93 @@
+title Inventory Sequence Diagram
+
+actor Player
+
+participant Inventory-UI
+participant Inventory
+participant craftingPage-UI
+participant Item
+participant Blueprint
+participant ListOfBlueprints-UI
+
+activate Player
+activate Inventory-UI
+
+Player->Inventory-UI:1. selectCraftingPage()
+ Inventory-UI->craftingPage-UI:2. showCraftingPage()
+ activate craftingPage-UI
+ deactivate Inventory-UI
+
+ 
+ alt 3. Player chooses to add blueprint
+ Player->craftingPage-UI: 3. addBlueprint()
+ else 3.1.1. chooses item that already exists
+ Player->craftingPage-UI: 3.1.2. showItem() [continues at 9.]
+ end
+ 
+ craftingPage-UI->Inventory:4. getBlueprints()
+ deactivate craftingPage-UI
+activate Inventory
+activate ListOfBlueprints-UI
+Inventory->ListOfBlueprints-UI:4. showBlueprints()
+alt 5. Player adds inactive blueprint
+Player->ListOfBlueprints-UI:5. choosesInactiveBlueprint()
+else 5.1. Player adds active blueprint
+Player->ListOfBlueprints-UI:5.1. choosesActiveBlueprint() 
+activate craftingPage-UI
+ListOfBlueprints-UI-->craftingPage-UI: 5.1. blueprint [continues at 7.]
+deactivate craftingPage-UI
+end
+ListOfBlueprints-UI->Inventory:5. addInactiveBlueprint()
+deactivate ListOfBlueprints-UI
+
+Inventory->Inventory:6. doesPlayerHaveEnoughCoins()
+
+alt 6. Player has enough coins
+
+activate Blueprint
+Inventory->Blueprint:6. activateBlueprint()
+Blueprint-->craftingPage-UI: 6. blueprint
+activate craftingPage-UI
+deactivate Blueprint
+else 6.1. Player doesn't have enough coins
+Inventory-->craftingPage-UI: 6.1. Error
+end
+
+Player->craftingPage-UI:7. selectPosForItem()
+craftingPage-UI->Inventory:8. checkPosForItem()
+deactivate craftingPage-UI
+opt 8. There is another item in the selected position
+Inventory->Inventory:8. removeItem()                                     
+end
+Inventory->Inventory:8. addItemToPos()
+
+Inventory->Blueprint:8. deactivateBlueprint()
+activate Blueprint
+Blueprint-->Inventory:8. blueprint
+
+deactivate Blueprint
+  Player->craftingPage-UI:9. chooseCraft()
+  craftingPage-UI->Inventory:9. craft()
+  deactivate craftingPage-UI
+  Inventory->Blueprint:10. getBlueprint()
+  activate Blueprint
+  Blueprint-->Inventory:10. blueprint
+  deactivate Blueprint
+  Inventory->Inventory: 10. checkIfMaterialsAreMissing()
+  
+alt 10. Materials are not missing
+activate Item
+Inventory->Item:10. addItem()
+  else 10.1 Some materials are missing
+ activate craftingPage-UI
+ Inventory->craftingPage-UI:10.1. cancelCrafting() [stop]
+  deactivate craftingPage-UI
+ end
+Item-->Inventory:11.item
+deactivate Item
+Inventory->Blueprint:11. getBlueprint()
+activate Blueprint
+Blueprint-->Inventory:11. blueprint
+deactivate Blueprint
+Inventory->Inventory:11. removeMaterials()
+ deactivate Inventory
