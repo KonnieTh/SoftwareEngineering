@@ -1,13 +1,14 @@
 from Hint import Hint 
 from Offer import Offer
 from inventory import Inventory
+#from server import Server
 
 class User:
     def __init__(self,username,password,email,profilePicture):
         self.username = username
         self.password = password
         self.email = email
-        self.listOfFriends = []
+        self.FriendsList = []
         self.listOfAchievements = []
         self.profilePicture = profilePicture
         self.rank = 0
@@ -33,7 +34,7 @@ class User:
 
 
     def makeOffer(self,item,price):
-        if not item in self.inventory.itemDict:
+        if item not in self.inventory.itemDict:
             print("ERROR")
         elif self.inventory.itemDict.get(item)==0:
             print("ERROR")
@@ -51,11 +52,17 @@ class User:
     def updateHintsOfUser(self,num):
         self.numOfHints += num
 
-    def showUser(self):
-        pass
-
-    def updateHintsAndCoinsOfUser(self,coins):
-        self.inventory.coins += coins
+    
+    def updateHintsAndCoinsOfUser(self,penalty):
+           #if server.ckeckPercentageOfPositiveReviews():
+                self.numOfHints += 1
+            #else:
+                if penalty == "coins":
+                    self.inventory.coins += 10
+                elif penalty == "hint":
+                    self.numOfHints =- 1
+                else: 
+                    print("ERROR")
 
     def createHint(self,hintName,hintDesc):
         self.numOfHints -= 1
@@ -65,8 +72,9 @@ class User:
     def getHint(self,hint): #return the given hint:string
         return "Title:" + hint.hintTitle + "Description:" + hint.hintDescription
 
+
     def sendGift(self,item):
-         if not item in self.inventory.itemDict:
+         if item not in self.inventory.itemDict:
             print("ERROR")
          elif self.inventory.itemDict.get(item)==0:
             print("ERROR")
@@ -74,10 +82,18 @@ class User:
             x = self.inventory.itemDict.get(item)
             x -= 1
             return item
-        
+    
+    def reciprocateGift(self):
+        pass
 
     def reqFriendsList(self):
-        return self.listOfFriends
+        return self.FriendsList
 
     def sendFriendRequest(self,user):
         pass
+
+    def updateFriendsList(self,user):
+        if user not in self.FriendsList:
+            self.FriendsList.append(user)
+        else:
+            print("User already exists in friends list")
