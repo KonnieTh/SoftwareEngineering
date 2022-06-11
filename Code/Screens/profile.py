@@ -62,9 +62,9 @@ label1 = Label("Profile", (x/2-100, y/10-50), myfont, "navy")
 label2 = Label("Username: .......", (x/2-100, y/10+320),pygame.font.SysFont("Arial", 30), "navy")
 label3 = Label("Search for players", (x/2+270, y/10), pygame.font.SysFont("Arial", 20), "navy")
 pic1 = Picture('.\Code\Screens\images\\anonymous.jpg', (x/2-140, y/10+30))
-button1 = Button("              Choose From Inventory             ", (x/8+250,  y/6+150), font=30, bg="navy") 
+button1 = Button("              Friends             ", (x/2-140,  y/10+380), font=30, bg="navy") 
 button2 = Button("    Back    ", (x/2-600,  y/10+600), font=30, bg="navy")
-button3 = Button("    Publish Offer    ", (x/8+900, y/6+350), font=30, bg="navy")
+button3 = Button("             Trophies            ", (x/2-140, y/10+450), font=30, bg="navy")
 inputt=pygame.Rect(x/2+260,y/10+30,300,35)
 
 color_active = pygame.Color((250,250,250))
@@ -110,8 +110,7 @@ while running:
     label1.show()
     label2.show()
     label3.show()
-    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-40,y/6+120,1200,300),2) #big rectangle
-    pygame.draw.rect(scr,color, inputt) #buyout
+    pygame.draw.rect(scr,color, inputt) #input
     text_surface = pygame.font.SysFont("Arial", 28).render(user_text, True, "black")
     inputt.w = max(250, text_surface.get_width()+10)
     scr.blit(text_surface, (inputt.x+5, inputt.y+5))
