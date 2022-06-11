@@ -77,7 +77,7 @@ button1 = Button("       New Game       ",(x/2-120, y/2),font=30,bg="navy")
 button2 = Button("       Load Game      ", (x/2-120, y/2+80), font=30, bg = "navy")
 button3 = Button("      Online co-op      ", (x/2-120, y/2+160), font=30, bg = "navy")
 button4 = Button("          Settings         ", (x/2-120, y/2+240), font=30, bg="navy")
-button5 = Button("             Quit            ", (x/2-120, y/2+320), font=30, bg="navy") 
+button5 = Button("          Exit         ", (x/2-100, y/2+320), font=30, bg="navy") 
 button6 = Button("   E-shop   ", (x/2+350, y/32), font=30, bg="navy")
 button7 = Button("   Profile   ", (x/2+500, y/32), font=30, bg="navy")
 #game loop
