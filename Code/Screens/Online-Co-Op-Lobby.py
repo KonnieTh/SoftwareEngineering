@@ -12,16 +12,6 @@ pygame.init()
 myfont = pygame.font.SysFont("Arial", 45, bold=True)
 label = myfont.render("Welcome to", False, (255, 255, 255))
 
-"""
-def showCommunityLevels():
-    running1 = True
-    while running1:
-        screen.fill((32, 230, 174))
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running1= False
-"""
-
 class Button:
     """Create a button, then blit the surface in the while loop"""
 
