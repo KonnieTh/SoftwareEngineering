@@ -4,13 +4,12 @@ from inventory import Inventory
 #from server import Server
 
 class User:
-    def __init__(self,username,password,email,profilePicture):
+    def __init__(self,username,password,email):
         self.username = username
         self.password = password
         self.email = email
         self.FriendsList = []
         self.listOfAchievements = []
-        self.profilePicture = profilePicture
         self.rank = 0
         self.live = False 
         self.inventory = Inventory()
@@ -97,3 +96,9 @@ class User:
             self.FriendsList.append(user)
         else:
             print("User already exists in friends list")
+
+    def returnSample(self,friends = None, all = None):
+        pass
+
+    #def setStatRequested(characteristics: list,timeLim = None):
+    #    formQuery(characteristics, timeLim)
