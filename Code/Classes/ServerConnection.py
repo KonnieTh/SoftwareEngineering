@@ -107,9 +107,13 @@ class ServerConnection:
         pass
 
 
+    def retrieveOffers(self,seller):
+        playerOffers = []
+        for i in range(len(self.offerList)):
+            if self.offerList[i].seller == seller:
+                playerOffers.append(self.offerList[i])
 
-
-
+        return playerOffers        
 
 
 

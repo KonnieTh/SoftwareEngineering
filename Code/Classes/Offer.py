@@ -9,3 +9,4 @@ class Offer:
         self.startingBid = startingBid
         self.timeOfCreation = datetime.datetime.now()
         self.quantity = quantity
+
