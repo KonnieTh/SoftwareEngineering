@@ -15,19 +15,19 @@ if input1=="yes":
     if (user1.checkNumOfHints()==True):
         hint_input = input('Please type the title of the hint you want to see: \n')
 
-        for i in server.hintDict:
-            if hint_input in server.hintDict:
-                user1.getHint(server.hintDict[i])
+        for i in server.hintsList:
+            if hint_input in server.hintsList:
+                user1.getHint(server.hintList[i])
                 
                 review_input = input("Please rate this hint. Type yes for a positive review or no for a negative review: \n")
                 
                 if review_input == "yes":
-                    server.hintDict[i].likes += 1
+                    server.hintList[i].likes += 1
                     server.updateHintReviews()
                     server.percentOfPosReviews()
 
                 elif review_input == "no":
-                    server.hintDict[i].likes -= 1
+                    server.hintList[i].likes -= 1
                     server.updateHintReviews()
                     server.percentOfPosReviews()
 
