@@ -23,3 +23,5 @@ input_friend = input("Enter the username of the player you want to add as friend
 
 server.sendFriendRequest(user1.username,input_friend)
 
+
+

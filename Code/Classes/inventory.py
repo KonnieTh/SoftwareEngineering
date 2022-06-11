@@ -76,7 +76,7 @@ class Inventory:
         for i in lis:
             self.materialDict[i]-=1
 
-    def addMaterials(self,item): #adds the materials the item consists of
+    def addMaterialsItem(self,item): #adds the materials the item consists of
         blueprint=Blueprint(item)
         lis=blueprint.getBlueprint() #list of materials the item consists of
         for i in lis:
@@ -105,10 +105,10 @@ class Inventory:
     def enoughSpaceForCrafting(self,item): #returns True if there is enough space for crafting
         self.removeMaterials(item)
         if(self.enoughSpace()):
-            self.addMaterials(item)
+            self.addMaterialsItem(item)
             return True
         else:
-            self.addMaterials(item)
+            self.addMaterialsItem(item)
             return False
 
     def canPlayerCraftNewItem(self): #returns True if after the addition of some materials the player can craft a new item
