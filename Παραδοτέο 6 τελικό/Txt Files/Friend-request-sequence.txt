@@ -50,7 +50,7 @@ deactivate UserList-UI
   User-->Server:4. Request Accepted
   Server->>FriendsList:4. updateList()
   activate FriendsList
-  FriendsList-->Server:4. new list
+  FriendsList-->User:<color:#red>4. new list
   deactivate FriendsList
   else 4.1. Doesn't accept Friend Request
   User-->Server:4.1. Request  Not Accepted [stop]

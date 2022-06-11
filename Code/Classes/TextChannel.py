@@ -1,7 +1,5 @@
 #from server import Server
 
-from pickle import NONE
-
 
 class TextChannel:
     def __init__(self,channelName,playerList):

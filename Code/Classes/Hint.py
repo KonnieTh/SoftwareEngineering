@@ -7,4 +7,5 @@ class Hint:
         self.dislikes = 0
 
 
-
+    def getHint(self):
+        return self.hintTitle, self.tags, self.hintDescription
