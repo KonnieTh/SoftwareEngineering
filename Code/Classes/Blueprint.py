@@ -1,28 +1,28 @@
 class Blueprint():
     def __init__(self,itemTag):
-        self.__list_of_materials = []
+        self.list_of_materials = []
         self.itemTag=itemTag
         self.isActive=True
     
         if(self.itemTag=="gum_gun"):
-           self.__list_of_materials.append("")
+            self.list_of_materials=["oil","gears","metalScraps"]
         if(self.itemTag=="stun_gun"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["oil","springs","metalScraps"]
         if(self.itemTag=="EMP_grenade"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["cables","gears"]
         if(self.itemTag=="time_travel_grenade"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["cables","metalScraps"]
         if(self.itemTag=="time_freeze_grenade"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["cables","springs"]
         if(self.itemTag=="life_potion"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["mystery_fluid","oil"]
         if(self.itemTag=="speed_potion"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["mystery_fluid","springs"]
         if(self.itemTag=="stamina_potion"):
-            self.__list_of_materials.append("")
+            self.list_of_materials=["mystery_fluid","gears"]
     
     def getBlueprint(self):
-        return  self.__list_of_materials
+        return  self.list_of_materials
 
     def activateBlueprint(self):
         self.isActive=True

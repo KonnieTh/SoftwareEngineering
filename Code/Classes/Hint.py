@@ -8,4 +8,4 @@ class Hint:
 
 
     def getHint(self):
-        pass
+        return self.hintTitle, self.tags, self.hintDescription
