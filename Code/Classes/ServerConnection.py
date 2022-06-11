@@ -91,7 +91,7 @@ class ServerConnection:
     def percentOfPosReviews(self):
         pass
 
-    def updateHintReviewa(self):
+    def updateHintReviews(self):
         pass
 
     def examinId(self):
