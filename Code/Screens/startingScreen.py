@@ -5,11 +5,11 @@ scr = pygame.display.set_mode((1910, 1060), pygame.FULLSCREEN)
 x, y = scr.get_size()
 #Title
 pygame.display.set_caption('Area 15 Welcome!')
-icon = pygame.image.load('logo.png')
+icon = pygame.image.load('Code\Screens\images\logo.png')
 
 #initialise game
 pygame.init()
-startingImg = pygame.image.load('logo.png')
+startingImg = pygame.image.load('Code\Screens\images\logo.png')
 
 myfont = pygame.font.SysFont("Segoe UI", 60)
 label = myfont.render("Welcome to", False, (255,255,255))
@@ -71,7 +71,7 @@ class Picture:
         scr.blit(pygame.image.load(self.imagePath), (self.x, self.y))
 
 label1 = Label("Welcome to", (x/2.6, y/32), myfont, ("navy"))
-pic1 = Picture('logo.png', (x/2.4, y/9))
+pic1 = Picture('Code\Screens\images\logo.png', (x/2.4, y/9))
 label2 = Label("Start your escape", (x/2.7, y/3), myfont, ("navy"))
 button1 = Button("New Game  ",(x/2.25, 3*y/4),font=30,bg="navy")
 button2 = Button("Load Game ", (x/2.25, 3*y/4+40), font=30, bg = "navy")
