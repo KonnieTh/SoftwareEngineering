@@ -12,6 +12,7 @@ class ServerConnection:
         self.usersList = []
         self.roomsList = []
         self.availLevels = availLevels
+        self.hintsList = []
 
     def userSingedIn(self, user):
         currentTime = datetime.datetime.now()
@@ -62,11 +63,8 @@ class ServerConnection:
         self.offerList.remove(offer)
 
     def returnFunds(self, price, user):
-        user.inventory.coins += 0.05 * price
+        user.inventory.coins += int(0.05 * price)
         
-
-    def updateList(self):
-        pass
 
     def sendFriendRequest(self, senderUser, receiverUser):
         x = int(input(f"{senderUser.username} has sent you a friend request: (type: 0 to decline, 1 to accept, 2 to answer later)"))
@@ -83,28 +81,37 @@ class ServerConnection:
         else:
             senderUser.notifications.append(f"User: {receiverUser.username} has declined your request")
 
+    def percentOfPosReviews(self, hint):
+        if hint.likes+hint.dislikes >= 10:
+            h = hint.likes / (hint.likes + hint.dislikes)
+            if h >= 0.7:
+                hint.author.numOfHints += 1
 
-    
-    def checkUser(self):
-        pass
+            elif hint.author.numOfHints > 1:
+                hint.author.numOfHints -= 1
 
-    def percentOfPosReviews(self):
-        pass
+            elif hint.author.inventory.coins >= 10:
+                hint.author.inventory.coins -= 10
+            
+            elif hint.author.inventory.coins < 10:
+                hint.author.inventory.coins = 0
 
-    def updateHintReviews(self):
-        pass
 
-    def examinId(self):
-        pass
+    def updateHintReviews(self, hint, liked):
+        if liked:
+            hint.likes += 1
+        else:
+            hint.dislikes += 1
 
-    def addNewOffer(self):
-        pass
-
-    def returnAvailLevel(self, id):
-        pass
 
     def checkUser(self, user):
-        pass
+        if user in self.usersList:
+            return True
+        else:
+            return False
+
+    def storeHint(self, hint):
+        self.hintsList.append(hint)
 
 
     def retrieveOffers(self,seller):
@@ -113,7 +120,9 @@ class ServerConnection:
             if self.offerList[i].seller == seller:
                 playerOffers.append(self.offerList[i])
 
-        return playerOffers        
+        return playerOffers  
+
+
 
 
 

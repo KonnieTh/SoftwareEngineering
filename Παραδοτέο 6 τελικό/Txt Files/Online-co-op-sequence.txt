@@ -1,0 +1,114 @@
+title Online co-op sequence
+
+actor Player
+activate Player
+
+participant StartingMenu-UI
+participant Co-opModeScreen-UI
+participant ServerRoom
+participant Server
+participant User
+
+Player->StartingMenu-UI:1. choosesOnlineCo-opMode
+activate StartingMenu-UI
+StartingMenu-UI->Co-opModeScreen-UI:2. display()
+activate Co-opModeScreen-UI
+deactivate StartingMenu-UI
+Co-opModeScreen-UI->Co-opModeScreen-UI:showRoomsList()
+alt 3. Player types ID of the room chosen
+	Player->Co-opModeScreen-UI:3. typesRoomID [continues at 4.]
+
+else 3.1. Player chooses room from list
+	Player->Co-opModeScreen-UI:3.1. choosesRoomFromList 
+        activate ServerRoom
+    Co-opModeScreen-UI->ServerRoom:tryConnection()    [continues at 5.]
+	deactivate ServerRoom
+else 3.2.1. Player chooses to create room
+	Player->Co-opModeScreen-UI:3.2.1. choosesToCreateRoom
+        Co-opModeScreen-UI->Server:canHandleOneMoreRoom()
+        activate Server
+    alt 3.2.2. server can support one more room
+	Server-->Co-opModeScreen-UI:True
+    Co-opModeScreen-UI-->Co-opModeScreen-UI:ShowPsswdQuestion
+    alt 3.2.3. User makes password preotected room
+    Player->Co-opModeScreen-UI:PlayerChoosesToSetPsswd
+   activate ServerRoom 
+    Co-opModeScreen-UI->ServerRoom:setPsswd() [continues at 8.]
+    deactivate ServerRoom
+	else 3.2.4.1. User chooses to create public room
+    	Player->Co-opModeScreen-UI:PlayerDoesNotSetPsswd [continues at 8.]
+    end
+    else 3.2.2.1.  server can not support one more room
+    Server-->Co-opModeScreen-UI:False
+    Co-opModeScreen-UI->Co-opModeScreen-UI:PrintErr
+    end 
+end
+Co-opModeScreen-UI->Server:searchID()
+alt 4. ID exists
+Server->Co-opModeScreen-UI:returnRoom
+else 4.1. ID does not exist
+Server-->Co-opModeScreen-UI:printErr
+deactivate Server
+end 
+alt 5. Room requires psswd
+Co-opModeScreen-UI->Co-opModeScreen-UI:requireRoomPsswd
+else 5.1. No psswd required [continues at7.]
+end
+
+Player->Co-opModeScreen-UI:6. userTypesPsswd
+alt 7. system checks if there is enough space and if psswd was correct
+Co-opModeScreen-UI->ServerRoom:psswdCorrectAndEnoughSpace()
+
+activate ServerRoom
+ServerRoom-->Co-opModeScreen-UI:True
+else 7.1. User cannot connect to the room (wrong psswd or not enough space)
+Co-opModeScreen-UI->ServerRoom:psswdCorrectAndEnoughSpace()
+
+ServerRoom-->Co-opModeScreen-UI:False
+Co-opModeScreen-UI->Co-opModeScreen-UI:PrintErr
+deactivate ServerRoom
+end
+Co-opModeScreen-UI->Co-opModeScreen-UI:8. inviteFriendQuestion
+alt 9. Invites friend
+Player->Co-opModeScreen-UI:choosesToInviteFriend
+else 9.1. else 
+Player->Co-opModeScreen-UI:doesNotInvite [continues at 12]
+end 
+
+Co-opModeScreen-UI->User:findActiveFriends()
+activate User
+alt 10. List with active friends shown
+User-->Co-opModeScreen-UI:showActiveFriendsList
+else 10.1. No friends online right now
+User-->Co-opModeScreen-UI:noActiveFriends
+Co-opModeScreen-UI->Co-opModeScreen-UI:printErr [continues at 12.]
+deactivate User
+end
+Player->Co-opModeScreen-UI:11. ChoosesFriends
+alt 12. enough space for invited friends
+Co-opModeScreen-UI->ServerRoom:isThereEnoughSpace()
+activate ServerRoom
+ServerRoom-->Co-opModeScreen-UI:True
+else 12.1. else 
+Co-opModeScreen-UI->ServerRoom:isThereEnoughSpace()
+ServerRoom-->Co-opModeScreen-UI:False [continues at 13.]
+deactivate ServerRoom
+end 
+Co-opModeScreen-UI->>User:13. sendInvite()
+activate User
+User-->ServerRoom:PlayersThatAcceptedInvite
+activate ServerRoom
+deactivate User
+Player->Co-opModeScreen-UI:14. pressesStart
+Co-opModeScreen-UI->ServerRoom:addPlayer()
+deactivate Co-opModeScreen-UI
+ServerRoom->ServerRoom:allPlayersStarted()
+alt 15. All player in the room ready?
+ServerRoom->ServerRoom:true
+ServerRoom->ServerRoom:startGame
+else 15.1. Kick out players stalling and start game
+ServerRoom->ServerRoom:false
+ServerRoom->ServerRoom:removeLatePlayers()
+ServerRoom->ServerRoom:startGame
+deactivate ServerRoom
+end 
