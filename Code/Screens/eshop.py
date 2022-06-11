@@ -9,7 +9,7 @@ clock = pygame.time.Clock()
 
 #initialise game
 pygame.init()
-myfont = pygame.font.SysFont("Segoe UI", 60)
+myfont = pygame.font.SysFont("Segoe UI", 60,bold=True)
 label = myfont.render("Welcome to", False, (255,255,255))
 
 class Button:
@@ -58,25 +58,27 @@ class Picture:
         scr.blit(pygame.image.load(self.imagePath), (self.x, self.y))
 
 user_text=""
-label1 = Label("Create your own offer", (x/4+80, y/32), myfont, "navy")
-label2 = Label("Item to sell:", (x/8, y/6+150),pygame.font.SysFont("Arial", 30), "navy")
-label3 = Label("Buyout price:", (x/8, y/6+250), pygame.font.SysFont("Arial", 30), "navy")
-label4 = Label("Support biding system", (x/8, y/6+350), pygame.font.SysFont("Arial", 30), "navy")
-pic1 = Picture('.\Code\Screens\coin.png', (x/8+210, y/6+250))
-button1 = Button("              Choose From Inventory             ", (x/8+250,  y/6+150), font=30, bg="navy") 
-button2 = Button("    Back    ", (x/8,  y/6+450), font=30, bg="navy")
-button3 = Button("    Publish Offer    ", (x/8+900, y/6+350), font=30, bg="navy")
-inputt=pygame.Rect(x/8+260,y/6+250,300,35)
-check=pygame.Rect(x/8+300,y/6+350,60,35)
+label1 = Label("E-shop", (x/2-100, y/10-50), myfont, "navy")
+label2 = Label("Item_name", (x/2-560, y/10+160),pygame.font.SysFont("Arial", 30), "navy")
+label3 = Label("Today's Offers", (x/2-570, y/10+110), pygame.font.SysFont("Arial", 30), "navy")
+label4 = Label("Item_name by @username", (x/2-570, y/10+360), pygame.font.SysFont("Arial", 24), "navy")
+label5 = Label("Players' Offers", (x/2-570, y/10+310), pygame.font.SysFont("Arial", 30), "navy")
+label6 = Label("Cost:       99/2", (x/2-560, y/10+220),pygame.font.SysFont("Arial", 25), "navy")
+label7 = Label("Winning Bid:        80", (x/2-570, y/10+390), pygame.font.SysFont("Arial", 24), "navy")
+label8 = Label("Buyout Price:       99/150", (x/2-570, y/10+420), pygame.font.SysFont("Arial", 24), "navy")
 
-color_check_active= pygame.Color((31, 199, 0))
-color_check_passive= pygame.Color("red")
-color_check = color_check_passive
+pic1 = Picture('.\Code\Screens\images\coin.png', (x/2-505, y/10+220))
+pic2 = Picture('.\Code\Screens\images\coin.png', (x/2-450, y/10+389))
+pic3 = Picture('.\Code\Screens\images\coin.png', (x/2-450, y/10+422))
+
+button1 = Button("              Create your own offer             ", (x/2-230,  y/10+550), font=30, bg="navy") 
+button2 = Button("    Back    ", (x/8,  y/10+600), font=30, bg="navy")
+inputt=pygame.Rect(x/2-395,y/10+392,50,25)
+
 color_active = pygame.Color((250,250,250))
 color_passive = pygame.Color('white')
 color = color_passive
 active = False
-active_check=False
 
 #game loop
 running = True
@@ -87,11 +89,6 @@ while running:
             sys.exit()
         button2.click(event, pygame.QUIT)
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if check.collidepoint(event.pos):
-                if(active_check == False):
-                    active_check = True
-                else:
-                    active_check = False
             if inputt.collidepoint(event.pos):
                 active = True
             else:
@@ -115,24 +112,34 @@ while running:
     else:
         color = color_passive
 
-    if active_check:
-        color_check = color_check_active
-    else:
-        color_check = color_check_passive
-
     button2.show()
     button1.show()
-    button3.show()
     label1.show()
     label2.show()
     label3.show()
     label4.show()
-    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-40,y/6+120,1200,300),2) #big rectangle
+    label5.show()
+    label6.show()
+    label7.show()
+    label8.show()
+    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-40,y/10+80,1200,600),2) #big rectangle
+    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-12,y/10+150,1150,120),2) #medium1 rectangle
+    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-12,y/10+350,1150,120),2) #medium2 rectangle
+    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-6,y/10+155,250,110),2) #small1 rectangle
+    pygame.draw.rect(scr,"navy", pygame.Rect(x/8-6,y/10+355,250,110),2) #small2 rectangle
+
+    pygame.draw.rect(scr, "white", pygame.Rect(x/8-10, y/10+280, 1140, 15))  #scrollbar
+    pygame.draw.rect(scr, "dark grey", pygame.Rect(x/8-9, y/10+281, 90, 13))  #scrollbar
+
+    pygame.draw.rect(scr, "white", pygame.Rect(x/8-10, y/10+480, 1140, 15))  #scrollbar
+    pygame.draw.rect(scr, "dark grey", pygame.Rect(x/8-9, y/10+481, 90, 13))  #scrollbar
+
     pygame.draw.rect(scr,color, inputt) #buyout
-    pygame.draw.rect(scr,color_check, check) #biding
-    text_surface = pygame.font.SysFont("Arial", 28).render(user_text, True, "black")
-    inputt.w = max(250, text_surface.get_width()+10)
+    text_surface = pygame.font.SysFont("Arial", 20).render(user_text, True, "black")
+    inputt.w = max(40, text_surface.get_width()+10)
     scr.blit(text_surface, (inputt.x+5, inputt.y+5))
     pic1.show()
+    pic2.show()
+    pic3.show()
     pygame.display.update()
     clock.tick(60)
