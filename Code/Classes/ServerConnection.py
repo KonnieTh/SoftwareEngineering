@@ -1,4 +1,7 @@
-from User import *
+
+#from User import *
+from Hint import Hint
+from inventory import Inventory
 import datetime
 import random
 
@@ -82,7 +85,7 @@ class ServerConnection:
         else:
             senderUser.notifications.append(f"User: {receiverUser.username} has declined your request")
 
-    def percentOfPosReviews(self, hint):
+    def checkpercentOfPosReviews(self, hint):
         if hint.likes+hint.dislikes >= 10:
             h = hint.likes / (hint.likes + hint.dislikes)
             if h >= 0.7:
@@ -104,6 +107,8 @@ class ServerConnection:
         else:
             hint.dislikes += 1
 
+        print('Thanks for rating this hint!')
+
 
     def checkUser(self, user):
         if user in self.usersList:
@@ -122,3 +127,45 @@ class ServerConnection:
                 playerOffers.append(self.offerList[i])
 
         return playerOffers  
+
+    def findHint(self,tag,user):
+        for i in range(len(self.hintsList)):
+            if tag in self.hintsList[i].tags:
+                #print(self.hintsList[i].tags)
+                return self.hintsList[i]
+
+    def createHint(self,title,tags,desc,user):
+        locals()[title] = Hint(title,tags,desc,user)
+        self.storeHint(title)
+        user.numOfHints -= 1
+        print('Successfully created new hint!')
+
+
+    def checkText(self,text):
+        bannedWords = ['fuck']
+        for i in range(len(bannedWords)):
+            if bannedWords[i] in text: 
+                print('Found forbbiden works in text: '+ bannedWords[i])
+                return 'error'
+            else:
+                print('Text is ok, proceeding to uploading.')
+                return 'ok'
+
+    def reviewHint(self,input,hint):
+        if input == 'yes':
+            self.updateHintReviews(hint, 1)
+
+        elif input == "no":
+            self.updateHintReviews(hint, 0)
+
+
+
+server = ServerConnection(None,None,None)
+
+
+
+
+
+
+
+        

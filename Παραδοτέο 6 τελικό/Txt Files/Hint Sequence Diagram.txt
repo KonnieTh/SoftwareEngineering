@@ -1,0 +1,76 @@
+title Hint Sequence Diagram
+
+actor Player
+
+participant GamePage-UI
+participant HintPage-UI
+participant SearchField-UI
+participant Hint
+participant User
+participant HintReview-UI
+participant Server
+participant HintCreationPage-UI
+
+entryspacing 0.8
+activate Player
+Player->GamePage-UI:1. choosesHint()
+activate GamePage-UI
+GamePage-UI->HintPage-UI:2. show()
+deactivate GamePage-UI
+activate HintPage-UI
+alt 3. Player chooses to see hint
+Player->HintPage-UI:3. showHint()
+else 3.1. Player chooses to write hint
+Player->HintPage-UI:3.1.1. writeHint()
+HintPage-UI->HintCreationPage-UI:3.1.2. show()
+
+activate HintCreationPage-UI
+
+Player->HintCreationPage-UI:3.1.3. submitInput()
+HintCreationPage-UI->HintCreationPage-UI:3.1.4., 3.1.4.1. checkText()
+alt 3.1.4. text is OK
+HintCreationPage-UI-->HintPage-UI:3.1.4. success
+HintCreationPage-UI->Server:3.1.4. createHint()
+activate Server
+Server->Server:3.1.4. storeHint()
+deactivate Server
+else 3.1.4.1. text is not OK
+HintCreationPage-UI-->HintPage-UI:3.1.4.1. failure
+deactivate HintCreationPage-UI
+end
+end
+HintPage-UI->>User:4. checkNumOfHints()
+activate User
+alt 4. Player can see a hint
+User-->HintPage-UI: 4. Success
+else 4.1. Player can't see a hint
+
+
+User-->HintPage-UI: 4.1. Failure [stop]
+deactivate User
+
+end
+HintPage-UI->SearchField-UI:5. show()
+activate SearchField-UI
+Player->SearchField-UI:6. submitInput()
+SearchField-UI->Server:7. findHint()
+deactivate SearchField-UI
+activate Server
+
+Server->Hint:7. getHint()
+deactivate Server
+activate Hint
+Hint-->HintPage-UI:7. hint
+deactivate Hint
+activate HintReview-UI
+HintPage-UI->HintReview-UI:7. show()
+deactivate HintPage-UI
+
+Player->HintReview-UI:8. reviewHint()
+HintReview-UI->Server:9. updateHintReviews()
+activate Server
+deactivate HintReview-UI
+Server->Server:9. checkPercentageOfPositiveReviews()
+deactivate Server
+
+deactivate Player

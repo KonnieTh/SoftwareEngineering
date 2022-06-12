@@ -1,4 +1,3 @@
-
 title E-shop sequence diagram
 
 actor Player
@@ -28,6 +27,7 @@ deactivate StartingScreen-UI
  Player->ShopMenu-UI:3.1. chooseToBuyFromAnotherPlayer()
    ShopMenu-UI->ListOfPlayersOffers:3.1.1. display()
    activate ListOfPlayersOffers
+   ListOfPlayersOffers->Server
    ListOfPlayersOffers-->ShopMenu-UI:3.1.1. list
    deactivate ListOfPlayersOffers
    
@@ -37,13 +37,13 @@ deactivate StartingScreen-UI
    activate ShopMenu-UI
    else Player makes bid
    Player->ShopMenu-UI: 3.1.2.1. choosesBid()
-   ShopMenu-UI->Server:3.1.2.2.showBids()
+   ShopMenu-UI->Server:3.1.2.2.askForBidList()
    activate Server
-   Server->AvailBidsList:3.1.2.2. formBidsList()
+   Server->AvailBidsList:3.1.2.2. returnAvailBids()
    activate AvailBidsList
    AvailBidsList-->ShopMenu-UI:3.1.2.2. bids
    deactivate AvailBidsList
-   Player->ShopMenu-UI:3.1.2.3. choosesBid()
+   Player->ShopMenu-UI:3.1.2.3. makeBid()
    ShopMenu-UI->Server:3.1.2.4. updateBiggestBid()
    opt Player made the biggest bid
    Server->ShopMenu-UI:3.1.2.5. playerMadeBiggestBid() [continues at 6.]
@@ -63,7 +63,10 @@ deactivate StartingScreen-UI
 
   alt Successful Offer
   MakeOfferForm-UI->Server:3.2.5. publishOffer()
+  Server->ListOfPlayersOffers:publishOffer()
+  activate ListOfPlayersOffers
   Server-->ShopMenu-UI: 3.2.5. success [stop]
+  deactivate ListOfPlayersOffers
   else Unsuccessful offer
   MakeOfferForm-UI-->ShopMenu-UI:3.2.5.1. error [stop]
   deactivate MakeOfferForm-UI
@@ -78,32 +81,34 @@ deactivate StartingScreen-UI
    deactivate AvailProductsList
    Player->ShopMenu-UI:5. chooseToBuyItem()
    
-   ShopMenu-UI->Inventory:6. DoesPlayerHaveEnoughCoinsAndSpace()
+   ShopMenu-UI->Inventory:6. doesPlayerHaveEnoughCoinsAndSpace()
    activate Inventory
    deactivate ShopMenu-UI
    alt Players has enough coins and space in the inventory
    Inventory-->StartingScreen-UI:6. True
+   activate StartingScreen-UI
    else Players doesn't have enough coins and space in the inventory
    Inventory-->StartingScreen-UI:6.1. Error [stop]
    end
    StartingScreen-UI->Inventory:6. addItemRemoveCoins()
-   Inventory->Inventory:6. removeCoins()
-   Inventory->Inventory:6. addItem()
-   Inventory-->ShopMenu-UI:6. Successful Purchase
+   deactivate StartingScreen-UI
+   Inventory->Inventory:6. updateInventory()
+   Inventory->Server:publishPurchase()
+   activate Server
+   Server-->ShopMenu-UI:6. Successful Purchase
+   deactivate Server
    activate ShopMenu-UI
    ShopMenu-UI->ShopMenu-UI: 7. showOptions()
    alt Player chooses Minigame
    Player->ShopMenu-UI:8.choosesMinigame() 
    else Player chooses the 5% return
-   Player->ShopMenu-UI:8.1. choosesCoinReturn()
-   ShopMenu-UI->Inventory:8.1. addCoins()
+   Player->ShopMenu-UI:8.1. choosesReturnFunds()
+   ShopMenu-UI->Inventory:8.1. returnFunds()
    end
-   ShopMenu-UI->ShopMenu-UI:9. showMinigame()
+   ShopMenu-UI->ShopMenu-UI:9. setAndDisplayMiniGame()
    ShopMenu-UI->ShopMenu-UI:9. didPlayerWin()
    opt Player won
-   ShopMenu-UI->Inventory:9. addItem()
-   note over Inventory:continues with\nΕύρεση αντικειμένων\nUse-case
+   ShopMenu-UI->Inventory:9. addRandItem()
    deactivate ShopMenu-UI
    deactivate Inventory
    end
-   
