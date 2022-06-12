@@ -3,3 +3,7 @@ class Item:
         self.value = value
         self.itemName = itemName
         self.description = description
+
+class MysteryItem(Item):
+    #nothing for now
+    pass

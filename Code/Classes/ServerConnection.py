@@ -16,7 +16,14 @@ class ServerConnection:
         self.availLevels = availLevels
         self.hintsList = []
 
-    def userSingedIn(self, user):
+    def checkRoom(self, roomID):
+        for i in self.roomList:
+            if i.roomID == roomID:
+                return True
+        return False
+
+
+    def userSingedUp(self, user):
         currentTime = datetime.datetime.now()
         self.usersList.append([user, currentTime])
 
@@ -125,7 +132,9 @@ class ServerConnection:
         return playerOffers  
 
 
+
 server = ServerConnection(None,None,None)
+
 
 
 
