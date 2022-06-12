@@ -21,7 +21,7 @@ MainMenu-UI->UserProfile-UI:1. show()
 activate UserProfile-UI
 deactivate MainMenu-UI
 
-  Player->UserProfile-UI:1. searchUser()
+  Player-->UserProfile-UI:1. search for user
   UserProfile-UI->Server:2. userRequest()
   deactivate UserProfile-UI
   activate Server
@@ -48,7 +48,7 @@ deactivate UserList-UI
   activate User
   alt 4. Accepts Friend Request
   User-->Server:4. Request Accepted
-  Server->>FriendsList:4. updateList()
+  Server->>FriendsList:4. updateFriendsList()
   activate FriendsList
   FriendsList-->User:<color:#red>4. new list
   deactivate FriendsList
@@ -65,7 +65,7 @@ deactivate UserList-UI
   end
   UserProfile-UI->Inventory:6. showItems()
   activate Inventory
-  Inventory->ItemsList:6. createList()
+  Inventory-->ItemsList:6. shows a list
   deactivate Inventory
   activate ItemsList
   ItemsList-->UserProfile-UI:6. items
