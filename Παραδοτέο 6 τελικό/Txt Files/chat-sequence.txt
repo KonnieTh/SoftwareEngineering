@@ -10,7 +10,6 @@ participant team chat
 participant chat box
 participant User
 
-participant list Of live players
 participant TextChannel
 
 participant Server
@@ -19,48 +18,53 @@ participant Server
 
 activate Player
 alt Player chooses global chat
-Player->GameScreen-UI:openGlobalChat()
+Player->GameScreen-UI:1. openGlobalChat()
 activate GameScreen-UI
 
 
 
 else Player opens Team Chat
-Player->GameScreen-UI:openTeamChat()
-GameScreen-UI->team chat:openTeamChat()
+Player->GameScreen-UI:1.1.1. openTeamChat()
+GameScreen-UI->team chat:1.1.1. openTeamChat()
 
 activate team chat
-team chat->team chat:getPlayerList() [continues at 6.]
+team chat->team chat:1.1.2. getPlayerList() [continues at 6.]
 deactivate team chat
 else Player chooses to create new team chat
-Player->chat box:choosesPlayersForTeamChat()
+Player->GameScreen-UI:1.2.1. createTeam()
+GameScreen-UI->chat box:1.2.2. show()
 
 activate chat box
-chat box->chat box:submitTeam()
-chat box->chat box:new TextChannel [continues at 6.]
+Player->chat box:1.2.3. choosesPlayersForTeamChat()
+chat box->chat box: 1.2.4. askForName()
+Player->chat box:1.2.5. typeName()
+chat box->chat box:1.2.6. submitTeam()
+chat box->chat box:1.2.6. new TextChannel [continues at 6.]
 end
 
-GameScreen-UI->global chat:showGlobalChat()
+GameScreen-UI->global chat:1. showGlobalChat()
 deactivate GameScreen-UI
 
 activate global chat
-global chat->global chat:retrieveMessages()
+global chat->global chat:2. retrieveMessages()
+global chat->chat box: 2. show()
 deactivate global chat
 
-Player->chat box:types "@"
+Player->chat box:3. types "@"
 alt Player types "/"
-Player->chat box:types "/"
-chat box->TextChannel:openCommands()
+Player->chat box:3.1.1. types "/"
+chat box->TextChannel:3.1.2. openCommands()
 activate TextChannel
-Player->TextChannel:Player chooses “/ranking”
-TextChannel->User:retrieveRank()
+Player->TextChannel:3.1.3. Player chooses “/ranking”
+TextChannel->User:3.1.4. retrieveRank()
 activate User
 
 alt Player chooses “/achievements username”
-Player->TextChannel:Player chooses“/achievements username”.
-TextChannel->chat box:retrieveAchievements
+Player->TextChannel:3.1.3.1.1. Player chooses“/achievements username”.
+TextChannel->chat box:3.1.3.1.2. retrieveAchievements
 else Player chooses “/offers itemName"
-Player->TextChannel:Player chooses “/offers itemName"
-TextChannel->chat box:retrieveOffers
+Player->TextChannel:3.1.3.2.1. Player chooses “/offers itemName"
+TextChannel->chat box:3.1.3.2.2. retrieveOffers
 end
 
 end
@@ -69,33 +73,47 @@ end
 chat box->User:4. isLive()
 
 deactivate chat box
+alt found players
 User->TextChannel:4. showToList()
+else no players found
+User-->GameScreen-UI:4.1. error [stop]
+activate GameScreen-UI
+end
 
 deactivate User
 
-TextChannel-->GameScreen-UI:list
-deactivate list Of live players
+TextChannel-->GameScreen-UI:4. list
 
-activate GameScreen-UI
-Player->GameScreen-UI:chooses Player
-Player->chat box:types Message
+
+alt player found user he wanted
+Player->GameScreen-UI:5. chooses Player
+else player didn't found the uder he wanted
+Player->GameScreen-UI: 5.1. didntFindPlayer [continues at 3.]
+end
+Player->chat box:6. types Message
 activate chat box
-chat box->TextChannel:messageOptions()
-alt Player chooses importance "Yell"
-
-
+chat box->global chat:7. askToDetermineImportance()
 deactivate chat box
+activate global chat
+alt player doesn't want to determine importance
+Player->global chat:8. determineImportance()
+else player wants to determine importance
+Player->global chat:8.1.1./8.2.1. dontDetermineImportance()
+end
+global chat->TextChannel:8.1.2./8.2.2./9. messageOptions()
+deactivate global chat
 
-TextChannel->TextChannel:checkViability()
+
+
+TextChannel->TextChannel:10. checkViability()
 alt Message ok
-TextChannel->TextChannel:sendMessage()
+TextChannel->TextChannel:10. sendMessage()
 else Message not ok
-TextChannel->TextChannel:banMessage()
-TextChannel->Server:banUser()
+TextChannel->TextChannel:10.1. banMessage()
+TextChannel->Server:10.1. banUser()
 activate Server
 end
 
 deactivate GameScreen-UI
-deactivate User
 
 
