@@ -11,6 +11,29 @@ class Inventory:
         self.mystery_items={'mystery1':0,'mystery2':0,'mystery3':0,'mystery4':0,'mystery5':0,'mystery6':0,'mystery7':0,'mystery8':0,'mystery9':0,'mystery10':0,'mystery11':0,'mystery12':0}
         self.reviveToken=0
 
+    def addRandItem(self): #adds a random quantity
+        entry_list = list(self.itemDict.items())
+        random_entry = rd.choice(entry_list)
+        item=random_entry[0]
+        quantity = rd.randint(1, 5)
+        for i in range(quantity):
+            self.addItem(item)
+    
+    def changeItem(self,item): #possibly changes the item to a mystery
+        num=rd.randint(0,10)
+        if(num<3):
+            return self.getRandomMystery()
+        return item
+    
+    def crafting(self): #crafting
+        pass
+
+    def removeReviveToken(self): #removes one revive token
+        if(self.reviveToken>0):
+            self.reviveToken-=1
+        else:
+            print("Error")
+    
     def getRandomMystery(self): #returns random mystery item
         entry_list = list(self.mystery_items.items())
         random_entry = rd.choice(entry_list)

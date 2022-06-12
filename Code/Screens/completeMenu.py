@@ -25,13 +25,6 @@ x, y = scr.get_size()
 '''Global Variables'''
 pagesInputts = [None, pygame.Rect(x/2+260,y/10+30,300,35), pygame.Rect(x/8+800, y/5-50, 200, 35), pygame.Rect(x/8+800, y/5-50, 200, 35), pygame.Rect(x/2-395,y/10+392,50,25), pygame.Rect(x/8+260,y/6+250,300,35), None]
 pageSelectors = [True, False, False, False, False, False, False]
-#pageSelector[0] = startingScreen
-#............[1] = showProfile
-#............[2] = onlineCoOpLobby
-#............[3] = onlineCoOpCommL
-#............[4] = eShop
-#............[5] = eShopOffer
-#............[6] = gameScreen
 
 check=pygame.Rect(x/8+300,y/6+350,60,35)
 
