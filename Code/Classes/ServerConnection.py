@@ -30,10 +30,11 @@ class ServerConnection:
 
     def publishPurchase(self, offer, buyerUser, sellerUser, price):
         if offer in self.offerList:
+            offer.priceOfPurchase = price
             self.offerList.remove(offer)
             currentTime = datetime.datetime.now()
             self.pastPurchases.append([offer, buyerUser, sellerUser, price, currentTime])
-            self.updateInventory(self, offer, buyerUser, sellerUser, price)
+            self.updateInventory(offer, buyerUser, sellerUser)
         else:
             print("Error")
 
@@ -41,9 +42,9 @@ class ServerConnection:
         self.offerList.append(offer)
 
     def updateInventory(self, offer, buyerUser, sellerUser):
-        sellerUser.inventory.itemDict[offer] -= offer.quantity
+        sellerUser.inventory.itemDict[offer.itemToSell] -= offer.quantity
         sellerUser.inventory.coins += offer.priceOfPurchase
-        buyerUser.inventory.itemDict[offer] += offer.quantity
+        buyerUser.inventory.itemDict[offer.itemToSell] += offer.quantity
         buyerUser.inventory.coins -= offer.priceOfPurchase
 
     def addRandItem(self, user):
@@ -62,6 +63,9 @@ class ServerConnection:
         x = random.randint(1, 4)
         if x == 1:
             self.addRandItem(user)
+            print('Congratz you won!!')
+        else:
+            print('Oops you lost :(')    
 
     def removeOfferFromList(self, offer):
         self.offerList.remove(offer)
@@ -162,6 +166,12 @@ class ServerConnection:
         elif input == "no":
             self.updateHintReviews(hint, 0)
 
+    def makeListOfTodaysOffers(self):
+        temp = []
+        for i in range(len(self.offerList)):
+            if self.offerList[i].seller.username == 'shop':
+                temp.append(self.offerList[i])
+        return temp        
 
 
 server = ServerConnection(None,None,None)
