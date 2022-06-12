@@ -1,0 +1,96 @@
+title Friend request sequence diagram
+
+actor Player
+
+participant MainMenu-UI
+participant UserProfile-UI
+participant Server
+participant User
+participant #red UserList-UI
+participant FriendsList
+participant Inventory
+participant ItemsList
+participant Item
+
+entryspacing 0.8
+activate Player
+Player->MainMenu-UI:1. openProfile()
+activate MainMenu-UI
+
+MainMenu-UI->UserProfile-UI:1. show()
+activate UserProfile-UI
+deactivate MainMenu-UI
+
+  Player-->UserProfile-UI:1. search for user
+  UserProfile-UI->Server:2. userRequest()
+  deactivate UserProfile-UI
+  activate Server
+
+  loop 2. until found
+  Server->>User:2. checkUser()
+  activate User
+  end
+  User-->Server:2. user
+  deactivate User
+  alt 2. User Found
+  activate UserList-UI
+  Server->UserList-UI:<color:#red>2. showUser()
+  else 2.1. User Not Found
+ 
+  Server-->UserList-UI:<color:#red>2.1. userNotFound [stop]
+  deactivate UserList-UI
+  end
+  Player->UserList-UI:<color:#red>3. addFriend()
+  activate UserList-UI
+UserList-UI->Server:<color:#red>4. sendFriendRequest()
+deactivate UserList-UI
+  Server->>User:4. sendFriendRequest()
+  activate User
+  alt 4. Accepts Friend Request
+  User-->Server:4. Request Accepted
+  Server->>FriendsList:4. updateFriendsList()
+  activate FriendsList
+  FriendsList-->User:<color:#red>4. new list
+  deactivate FriendsList
+  else 4.1. Doesn't accept Friend Request
+  User-->Server:4.1. Request  Not Accepted [stop]
+  deactivate User
+  end
+  Server-->UserProfile-UI:4. user response
+  activate UserProfile-UI
+  alt 5. player chooses to send gift
+  Player->UserProfile-UI:5. sendGift()
+  else 5.1. player chooses not to send gift
+  Player->UserProfile-UI:<color:#red>5.1. dontSendGift() [stop]
+  end
+  UserProfile-UI->Inventory:6. showItems()
+  activate Inventory
+  Inventory-->ItemsList:6. shows a list
+  deactivate Inventory
+  activate ItemsList
+  ItemsList-->UserProfile-UI:6. items
+  deactivate ItemsList
+  Player->UserProfile-UI:7. chooseGift()
+  UserProfile-UI->Item:8. changeItem()
+  activate Item
+  Item-->UserProfile-UI:8. item
+  deactivate Item
+  UserProfile-UI->Server:8. sendGift()
+  Server->User:8. sendGift()
+  activate User
+  User->Server:9. reciprocateGift()
+  deactivate User
+  Server-->UserProfile-UI:9. gift
+  alt 10. accepts gift
+  Player->UserProfile-UI:10. acceptGift()
+  UserProfile-UI->Inventory:11. addGift()
+  activate Inventory
+  note over Inventory:continues with\nΕύρεση αντικειμένων\nUse-case
+  deactivate Inventory
+  else 10.1. doesn't accept gift
+  Player->UserProfile-UI:10.1. rejectGift()
+  end
+  deactivate UserProfile-UI
+  
+ deactivate Server
+ deactivate Player
