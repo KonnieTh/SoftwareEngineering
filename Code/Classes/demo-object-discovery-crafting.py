@@ -138,7 +138,7 @@ if(answer.lower()=='yes'):
     #     for i in player_inv.itemDict:
     #         print(i,end=" ")
     #     item2=input("Type item name: ")
-    #     positionn=input("Type position number (1-4)")
+    #     positionn=input("Type position number (1-4): ")
     #     player_inv.addBlueprint(item2,positionn)
     #     player_inv.registeredBlueprints()
 
