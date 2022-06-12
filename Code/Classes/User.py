@@ -51,15 +51,12 @@ class User:
         self.numOfHints += num
 
 
-    def sendGift(self,item):
-         if item not in self.inventory.itemDict:
-            print("ERROR")
-         elif self.inventory.itemDict.get(item)==0:
-            print("ERROR")
-         else:
-            x = self.inventory.itemDict.get(item)
-            x -= 1
-            return item
+    def sendGift(self,item, receiver):
+       self.inventory.removeItem(item)
+       changedItem = receiver.inventory.changeItem(item) #inventory
+       receiver.inventory.addItem(changedItem)
+       print("gift sent!")
+
     def reciprocateGift(self):
         pass
 
@@ -72,11 +69,23 @@ class User:
     def updateFriendsList(self,user):
         if user not in self.FriendsList:
             self.FriendsList.append(user)
+            print('Friend request accepted!')
         else:
-            print("User already exists in friends list")
+            print("User already exists in friends list.")
 
     def returnSample(self,friends = None, all = None):
         pass
 
+    def findActiveFriends(self):
+        pass
+
+    def sendInvite(self):
+        pass
+
+    def acceptGift(self,item):
+        self.inventory.addItem(item)
+
+    def rejectGift(self,item,sender):
+        sender.inventory.addItem(item)
     #def setStatRequested(characteristics: list,timeLim = None):
     #    formQuery(characteristics, timeLim)

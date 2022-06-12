@@ -78,12 +78,13 @@ class ServerConnection:
             self.sendFriendRequest(self, senderUser, receiverUser)
 
         elif(x == 1):
-            senderUser.listOfFriends.append(receiverUser)
-            receiverUser.listOfFriends.append(senderUser)
+            senderUser.updateFriendsList(receiverUser)
+            receiverUser.updateFriendsList(senderUser)
         elif(x == 2):
             print('Showing previous screen')
         else:
             senderUser.notifications.append(f"User: {receiverUser.username} has declined your request")
+            print('Friend request declined')
 
     def checkpercentOfPosReviews(self, hint):
         if hint.likes+hint.dislikes >= 10:
@@ -110,11 +111,14 @@ class ServerConnection:
         print('Thanks for rating this hint!')
 
 
-    def checkUser(self, user):
-        if user in self.usersList:
-            return True
-        else:
-            return False
+    def checkUser(self, username):
+        temp = []
+        for i in range(len(self.usersList)):
+            if self.usersList[i].username.startswith(username):
+                temp.append(self.usersList[i])
+
+        return temp        
+
 
     def storeHint(self, hint):
         self.hintsList.append(hint)

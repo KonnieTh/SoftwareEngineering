@@ -1,27 +1,38 @@
-from collections import UserList
 from User import User
-from ServerConnection import ServerConnection
+from ServerConnection import *
 
-user1 = User("john12","pswrd","john@gmail.com")
-user2 = User("jane23","kff","jane@gmail.com")
-user3 = User("mary340","233","mary@gmail.com")
+user4 = User("john12","pswrd","john@gmail.com")
+user5 = User("jane23","kff","jane@gmail.com")
+user6 = User("mary340","233","mary@gmail.com")
+user4.inventory.addItem('EMP_grenade')
+user4.inventory.addItem('life_potion')
 
-server = ServerConnection(None,None, None)
-server.usersList.append(user1.username)
-server.usersList.append(user2.username)
-server.usersList.append(user3.username)
+server.usersList.append(user4)
+server.usersList.append(user5)
+server.usersList.append(user6)
 
-input1 = input("Please enter a player's username: \n")
+FriendName = input("Enter a player's username: \n")
 
-for i in range(len(server.usersList)):
-    if (server.usersList[i] == input1):
-        print(server.usersList)
-    elif(server.usersList[i].find(input1) != -1 ):
-        print(server.usersList)
+relativeNames = server.checkUser(FriendName)
+for i in range(len(relativeNames)):   
+    print(relativeNames[i].username)
 
-input_friend = input("Enter the username of the player you want to add as friend: \n")
+receiver = input('Select a player to add to your friends: ')
+server.sendFriendRequest(user4,user5) #για λόγους ευκολίας μεσο αυτής της μεθόδου στέλνουμε και δεχόμαστε το friedn request
 
-server.sendFriendRequest(user1.username,input_friend)
+print('Send a gift to your new friend.')
+print(user4.inventory.itemDict) #showItems, createList()
+choice = input('Choose an item to give: ') #chooseGift
+user4.sendGift(choice,receiver) #για να δουλευει χρειάζεται η changeItem()
+
+#για λογους ευκολίας απλα θα δεχόμαστε gift αυθαίρετα το ίδιο item που στείλαμε
+choice2 = input('You got a gift, do you accept it(yes/no)?')
+if choice2 == 'yes':
+    user4.acceptGift(choice)
+elif choice2 == 'no':
+    user4.rejectGift(choice,receiver)
+
+
 
 
 
