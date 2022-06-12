@@ -19,3 +19,7 @@ Code terminal demos:
   * demo-object-discovery-crafting.py (object discovery, crafting use cases)
   * demo-eshop.py (eshop use case)
 All the above are located in folder Code/Classes/...
+
+Code classes:
+All the classes we used.
+They are located in Code/Classes/...
