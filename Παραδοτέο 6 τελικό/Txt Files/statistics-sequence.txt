@@ -1,0 +1,63 @@
+title Statistics sequence-diagram
+
+actor Player
+
+participant UserProfile-UI
+participant StatsScreen-UI
+participant FriendsList
+participant User
+participant Server
+
+activate Player
+activate UserProfile-UI
+Player->UserProfile-UI:1. chooses
+activate StatsScreen-UI
+UserProfile-UI->StatsScreen-UI:2. showStatSamples()
+deactivate UserProfile-UI
+
+alt Player chooses stats among friends
+Player->StatsScreen-UI:3. chooseStatsAmongFriends()
+
+else 3.1. Player chooses Stats among all players
+	Player->StatsScreen-UI: 3.1. choosesAll [continues at 6.]
+end
+StatsScreen-UI->User:4. reqFriendsList()
+activate User
+User->FriendsList:4. showList()
+activate FriendsList
+deactivate User
+FriendsList-->StatsScreen-UI:4. FriendsList
+deactivate FriendsList
+Player->StatsScreen-UI:5. chooseStatSample(friends)
+StatsScreen-UI->StatsScreen-UI:6. showForm()
+
+alt Player fills entire form
+	Player->StatsScreen-UI:7. setStatRequested(characteristic, timeLim)
+else Player does not set time limit
+	Player->StatsScreen-UI:7.1.1. setStatRequested(characteristic)
+    StatsScreen-UI->StatsScreen-UI:7.1.2. setDefaultTime() [continues at 8.]
+end 
+
+StatsScreen-UI->Server:8.formQuery()
+activate Server
+Server-->StatsScreen-UI:8. findAndPresentData()
+deactivate Server
+StatsScreen-UI->StatsScreen-UI:8. showOptions()
+Player->StatsScreen-UI:9. choosesTypeOfGraph()
+
+StatsScreen-UI->StatsScreen-UI:10. showGraph()
+StatsScreen-UI->StatsScreen-UI:10. showOptionToShareWithFriends()
+Player->StatsScreen-UI:11. choosesToShareWithFriends()
+
+StatsScreen-UI->User:12. reqFriendsList()
+activate User
+User->FriendsList:12. showList()
+activate FriendsList
+deactivate User
+FriendsList-->StatsScreen-UI:12. FriendsList
+deactivate FriendsList
+Player->StatsScreen-UI:13. chooseFriends()
+activate Server
+StatsScreen-UI->Server:14. sendToFriends()
+deactivate Server
+deactivate StatsScreen-UI
