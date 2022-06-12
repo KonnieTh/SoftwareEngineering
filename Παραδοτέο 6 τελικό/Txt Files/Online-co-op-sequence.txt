@@ -50,9 +50,8 @@ else 4.1. ID does not exist
 Server-->Co-opModeScreen-UI:4.1. Error
 deactivate Server
 end 
-alt 5. Room requires psswd
-Co-opModeScreen-UI->Co-opModeScreen-UI:requireRoomPsswd                     
-else 5.1. No psswd required [continues at7.]
+opt 5. Room requires psswd
+Co-opModeScreen-UI->Co-opModeScreen-UI:requireRoomPsswd        
 end
 
 Player->Co-opModeScreen-UI:6. userTypesPsswd
