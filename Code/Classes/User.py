@@ -1,4 +1,3 @@
-from Hint import Hint 
 from inventory import Inventory
 from ServerConnection import *
 
@@ -50,26 +49,6 @@ class User:
 
     def updateHintsOfUser(self,num):
         self.numOfHints += num
-
-    
-    def updateHintsAndCoinsOfUser(self,penalty):
-        if server.percentOfPosReviews()==True:
-            self.numOfHints += 1
-        else:
-            if penalty == "coins":
-                self.inventory.coins += 10
-            elif penalty == "hint":
-                self.numOfHints =- 1
-            else: 
-                print("ERROR")
-
-    def createHint(self,hintName,hintDesc,username):
-        self.numOfHints -= 1
-        self.hint = Hint(hintName,None,hintDesc,username)
-
-
-    def getHint(self,hint): #return the given hint:string
-        return "Title:" + hint.hintTitle + "Description:" + hint.hintDescription
 
 
     def sendGift(self,item):
