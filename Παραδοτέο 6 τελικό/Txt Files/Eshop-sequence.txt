@@ -102,6 +102,7 @@ deactivate StartingScreen-UI
    ShopMenu-UI->ShopMenu-UI:9. didPlayerWin()
    opt Player won
    ShopMenu-UI->Inventory:9. addItem()
+   note over Inventory:continues with\nΕύρεση αντικειμένων\nUse-case
    deactivate ShopMenu-UI
    deactivate Inventory
    end

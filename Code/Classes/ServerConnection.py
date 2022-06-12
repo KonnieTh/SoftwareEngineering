@@ -1,3 +1,4 @@
+
 #from User import *
 from Hint import Hint
 from inventory import Inventory
@@ -58,9 +59,8 @@ class ServerConnection:
         pass
 
     def setAndDisplayMiniGame(self, user):
-        x = random.randint(1, 20)
-        y = int(input('Chooose a num between 1 and 20: '))
-        if x == y:
+        x = random.randint(1, 4)
+        if x == 1:
             self.addRandItem(user)
 
     def removeOfferFromList(self, offer):
@@ -160,7 +160,6 @@ class ServerConnection:
 
 
 
-
 server = ServerConnection(None,None,None)
 
 
@@ -169,3 +168,4 @@ server = ServerConnection(None,None,None)
 
 
 
+        
