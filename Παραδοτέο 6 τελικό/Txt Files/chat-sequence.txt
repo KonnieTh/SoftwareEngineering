@@ -1,0 +1,101 @@
+title Chat Sequence Diagram
+
+actor Player
+participant GameScreen-UI
+
+participant global chat
+
+
+participant team chat
+participant chat box
+participant User
+
+participant list Of live players
+participant TextChannel
+
+participant Server
+
+
+
+activate Player
+alt Player chooses global chat
+Player->GameScreen-UI:openGlobalChat()
+activate GameScreen-UI
+
+
+
+else Player opens Team Chat
+Player->GameScreen-UI:openTeamChat()
+GameScreen-UI->team chat:openTeamChat()
+
+activate team chat
+team chat->team chat:getPlayerList() [continues at 6.]
+deactivate team chat
+else Player chooses to create new team chat
+Player->chat box:choosesPlayersForTeamChat()
+
+activate chat box
+chat box->chat box:submitTeam()
+chat box->chat box:new TextChannel [continues at 6.]
+end
+
+GameScreen-UI->global chat:showGlobalChat()
+deactivate GameScreen-UI
+
+activate global chat
+global chat->global chat:retrieveMessages()
+deactivate global chat
+
+Player->chat box:types "@"
+alt Player types "/"
+Player->chat box:types "/"
+chat box->TextChannel:openCommands()
+activate TextChannel
+Player->TextChannel:Player chooses “/ranking”
+TextChannel->User:retrieveRank()
+activate User
+
+alt Player chooses “/achievements username”
+Player->TextChannel:Player chooses“/achievements username”.
+TextChannel->chat box:retrieveAchievements
+else Player chooses “/offers itemName"
+Player->TextChannel:Player chooses “/offers itemName"
+TextChannel->chat box:retrieveOffers
+end
+
+end
+
+
+chat box->User:4. isLive()
+
+deactivate chat box
+User->TextChannel:4. showToList()
+
+deactivate User
+
+TextChannel-->GameScreen-UI:list
+deactivate list Of live players
+
+activate GameScreen-UI
+Player->GameScreen-UI:chooses Player
+Player->chat box:types Message
+activate chat box
+chat box->TextChannel:messageOptions()
+alt Player chooses importance "Yell"
+
+
+deactivate chat box
+
+TextChannel->TextChannel:checkViability()
+alt Message ok
+TextChannel->TextChannel:sendMessage()
+else Message not ok
+TextChannel->TextChannel:banMessage()
+TextChannel->Server:banUser()
+activate Server
+end
+
+deactivate GameScreen-UI
+deactivate User
+
+
