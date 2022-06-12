@@ -47,10 +47,14 @@ class Inventory:
         return item
     
     def crafting(self,item): #crafts an item
-        if(self.enoughSpaceForCrafting(item) and not self.checkIfMaterialsAreMissing(item)):
+        if(self.enoughSpaceForCrafting(item) and self.checkIfMaterialsAreMissing(item)):
             self.removeMaterials(item)
             self.addItem(item)
             print("\nCrafting Done!")
+            return True
+        else:
+            print("Not enough space or missing materials")
+            return False
 
     def removeReviveToken(self): #removes one revive token
         if(self.reviveToken>0):
@@ -94,13 +98,17 @@ class Inventory:
             print("ERROR")
     
     def clearPosition(self,obj): #opens up a position
-        if(self.materialDict[obj]):
-            self.materialDict[obj]=0
-            return "DONE"
-        if(self.itemDict[obj]):
-            self.itemDict[obj]=0
-            return "DONE"
-        return "FAIL"
+        try:
+            if(self.materialDict[obj]):
+                self.materialDict[obj]=0
+                return "DONE"
+        except:
+            try:
+                if(self.itemDict[obj]):
+                    self.itemDict[obj]=0
+                    return "DONE"
+            except:
+                return "FAIL"
         
 
     def areThereEnoughMaterials(self,material,num): #Trade-returns True if there are at least num materias in the inventory
