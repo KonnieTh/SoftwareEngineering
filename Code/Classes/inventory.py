@@ -3,13 +3,34 @@ import random as rd
 
 class Inventory:
     def __init__(self):
-        self.coins = 0
+        self.coins = 20
         self.size = 6
         self.pos={1:'',2:'',3:'',4:''} #positions to place blueprints
         self.materialDict = {'cables':0,'gears':0,'metalScraps':0,'oil':0,'springs':0,'mystery_fluid':0}
         self.itemDict = {'gum_gun':0,'stun_gun':0,'EMP_grenade':0,'time_travel_grenade':0,'time_freeze_grenade':0,'life_potion':0,'speed_potion':0,'stamina_potion':0}
         self.mystery_items={'mystery1':0,'mystery2':0,'mystery3':0,'mystery4':0,'mystery5':0,'mystery6':0,'mystery7':0,'mystery8':0,'mystery9':0,'mystery10':0,'mystery11':0,'mystery12':0}
         self.reviveToken=0
+
+    def addBlueprint(self,blueprint,position): #adds blueprint to a position and deactivates it
+        if(blueprint.isActive==True):
+            self.pos[position]=blueprint
+            blueprint.deactivateBlueprint()
+        else:
+            print('Blueprint is inactive')
+
+    def getBlueprints(self): #show blueprints
+        for i in self.itemDict:
+            blueprint=Blueprint(i)
+            recipe=blueprint.getBlueprint()
+            print("Recipe for ", i, " is: ", end=" ")
+            for j in range(len(recipe)):
+                print(recipe[j],end=" ")
+            print()
+
+    def addInactiveBlueprint(self,blueprint): #activates inactive blueprint
+        if(self.doesPlayerHaveEnoughCoins(10)):
+            self.coins-=10
+            blueprint.activateBlueprint()
 
     def addRandItem(self): #adds a random quantity
         entry_list = list(self.itemDict.items())
@@ -25,8 +46,11 @@ class Inventory:
             return self.getRandomMystery()
         return item
     
-    def crafting(self): #crafting
-        pass
+    def crafting(self,item): #crafts an item
+        if(self.enoughSpaceForCrafting(item) and not self.checkIfMaterialsAreMissing(item)):
+            self.removeMaterials(item)
+            self.addItem(item)
+            print("\nCrafting Done!")
 
     def removeReviveToken(self): #removes one revive token
         if(self.reviveToken>0):
@@ -38,12 +62,15 @@ class Inventory:
         entry_list = list(self.mystery_items.items())
         random_entry = rd.choice(entry_list)
         return random_entry[0]
+
+    def destroyItems(self):
+        for i in self.itemDict:
+            self.clearPosition(i)
     
     def checkMystery(self,mystery): #checks if mystery item will be returned or it will clear all the items
         shot=rd.randint(0,99)
         if(shot<20):
-            for i in self.itemDict:
-                self.clearPosition(i)
+            self.destroyItems()
             return 'RIP'
         else:
             return mystery
@@ -120,6 +147,9 @@ class Inventory:
         for j in self.itemDict:
             if self.itemDict[j]>0:
                 spaces+=1
+        for k in self.mystery_items:
+            if self.mystery_items[k]>0:
+                spaces+=1
         if self.size>spaces:
             return True
         else:
@@ -142,6 +172,16 @@ class Inventory:
 
     def addMaterials(self,material,num): #adds a specific amount of a material
         self.materialDict[material]+=num
+    
+    def removeMaterial(self,material,num):#removes a specific amount of a material
+        self.materialDict[material]-=num
 
     def addItemToPos(self,item,position): #adds blueprint in a specific spot in crafting page
         self.pos[position]=item
+
+    def tradeItems(self,item1,item2,quantity): #trades item 1 for item 2 (2-1)
+        if(self.areThereEnoughMaterials(item1,quantity)):
+            self.removeMaterial(item1,quantity)
+            self.addMaterials(item2,quantity/2)
+        else:
+            print("Not enough materials")

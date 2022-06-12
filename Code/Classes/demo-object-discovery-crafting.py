@@ -100,14 +100,11 @@ def foundMaterial(inv,material): #in case player finds a material
     if(inv.canPlayerCraftNewItem()):
         print("\nLooks like you can craft an item!")
 
-def crafting(inv,item): #crafts an item
-    if(inv.enoughSpaceForCrafting(item) and not inv.checkIfMaterialsAreMissing(item)):
-        inv.removeMaterials(item)
-        inv.addItem(item)
-        print("\nCrafting Done!")
+
 
 
 player_inv=initInv()
+player_inv.getBlueprints()
 showInv(player_inv)
 foundMaterial(player_inv,"cables")
 print(player_inv.itemDict)
