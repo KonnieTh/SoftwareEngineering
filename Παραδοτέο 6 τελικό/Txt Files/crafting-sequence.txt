@@ -1,4 +1,4 @@
-title Inventory Sequence Diagram
+title Crafting Sequence Diagram
 
 actor Player
 
@@ -54,7 +54,7 @@ Inventory-->craftingPage-UI: 6.1. Error
 end
 
 Player->craftingPage-UI:7. selectPosForItem()
-craftingPage-UI->Inventory:8. checkPosForItem()
+craftingPage-UI->Inventory:8. isThereAnotherItemInPos()
 deactivate craftingPage-UI
 opt 8. There is another item in the selected position
 Inventory->Inventory:8. removeItem()                                     

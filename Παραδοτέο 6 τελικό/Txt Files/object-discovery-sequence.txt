@@ -16,7 +16,7 @@ GameScreen-UI->Item:1. interact()
 activate Item
 Item-->GameScreen-UI: 1. item
 deactivate Item
-GameScreen-UI->Inventory:2. isThereEnoughSpace()
+GameScreen-UI->Inventory:2. enoughSpace()
 activate Inventory
 alt no space
 Inventory-->GameScreen-UI:2. not enough space
@@ -37,7 +37,7 @@ alt mystery item
   GameScreen-UI->GameScreen-UI:6. showMessage(You found a mystery item!\nDo you want to pick it up?)
 else material
 GameScreen-UI->GameScreen-UI:6.1.1. showMessage(You found a material!)
-GameScreen-UI->Inventory:6.1.2. canPlayerCraftItem()
+GameScreen-UI->Inventory:6.1.2. canPlayerCraftNewItem()
 alt player can craft item
 Inventory-->GameScreen-UI:6.1.2. true [stop]
 GameScreen-UI->GameScreen-UI:6.1.2. showNotification()
@@ -65,6 +65,4 @@ GameScreen-UI->Eshop-offer-UI:11. openEshop
 deactivate GameScreen-UI
 note over Eshop-offer-UI:continues with\nE-shop Use-case
 deactivate Eshop-offer-UI
-
-
 
