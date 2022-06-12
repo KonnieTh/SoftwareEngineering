@@ -68,7 +68,7 @@ button2 = Button("Community Levels", (x/8+850, y/5-120), font=30, bg="light gree
 button3 = Button("  Search  ", (x/8+700, y/5-50), font=30, bg="navy")
 
 button4 =Button("    Back    ", (x/8-40,  y/5+500), font=30, bg="navy")
-button5 = Button("Download", (x/5+700, y/5+95), font=35, bg="navy")
+button5 = Button("   Download   ", (x/5+670, y/5+95), font=35, bg="navy")
 
 label1 = Label("Available Levels", (x/8+350, y/5+10), myfont, "navy")
 label2 = Label("#1111", (x/8+80, y/5+105),pygame.font.SysFont("Arial", 30), "navy")

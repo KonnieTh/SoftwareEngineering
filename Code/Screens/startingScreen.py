@@ -70,16 +70,16 @@ class Picture:
         
         scr.blit(pygame.image.load(self.imagePath), (self.x, self.y))
 
-label1 = Label("Welcome to", (x/2.6, y/32), myfont, ("navy"))
-pic1 = Picture('Code\Screens\images\logo.png', (x/2.4, y/9))
-label2 = Label("Start your escape", (x/2.7, y/3), myfont, ("navy"))
-button1 = Button("New Game  ",(x/2.25, 3*y/4),font=30,bg="navy")
-button2 = Button("Load Game ", (x/2.25, 3*y/4+40), font=30, bg = "navy")
-button3 = Button("Online co-op", (x/2.25, 3*y/4+80), font=30, bg = "navy")
-button4 = Button("  Settings     ", (x/2.25, 3*y/4+120), font=30, bg="navy")
-button5 = Button("     Quit        ", (x/2.25, 3*y/4+160), font=30, bg="navy") 
-button6 = Button("E-shop", (3*x/4, y/32), font=30, bg="navy")
-button7 = Button("profile", (3.3*x/4, y/32), font=30, bg="navy")
+label1 = Label("Welcome to", (x/2-170, y/2-420), myfont, ("navy"))
+pic1 = Picture('Code\Screens\images\logo.png', (x/2-120, y/2-350))
+label2 = Label("Start your escape", (x/2-230, y/2-150), myfont, ("navy"))
+button1 = Button("       New Game       ",(x/2-120, y/2),font=30,bg="navy")
+button2 = Button("       Load Game      ", (x/2-120, y/2+80), font=30, bg = "navy")
+button3 = Button("      Online co-op      ", (x/2-120, y/2+160), font=30, bg = "navy")
+button4 = Button("          Settings         ", (x/2-120, y/2+240), font=30, bg="navy")
+button5 = Button("          Exit         ", (x/2-100, y/2+320), font=30, bg="navy") 
+button6 = Button("   E-shop   ", (x/2+350, y/32), font=30, bg="navy")
+button7 = Button("   Profile   ", (x/2+500, y/32), font=30, bg="navy")
 #game loop
 running = True
 while running:
