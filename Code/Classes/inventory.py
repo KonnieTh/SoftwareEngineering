@@ -5,21 +5,39 @@ class Inventory:
     def __init__(self):
         self.coins = 20
         self.size = 6
-        self.pos={1:'',2:'',3:'',4:''} #positions to place blueprints
+        self.pos={'1':'','2':'','3':'','4':''} #positions to place blueprints
         self.materialDict = {'cables':0,'gears':0,'metalScraps':0,'oil':0,'springs':0,'mystery_fluid':0}
         self.itemDict = {'gum_gun':0,'stun_gun':0,'EMP_grenade':0,'time_travel_grenade':0,'time_freeze_grenade':0,'life_potion':0,'speed_potion':0,'stamina_potion':0}
         self.mystery_items={'mystery1':0,'mystery2':0,'mystery3':0,'mystery4':0,'mystery5':0,'mystery6':0,'mystery7':0,'mystery8':0,'mystery9':0,'mystery10':0,'mystery11':0,'mystery12':0}
         self.reviveToken=0
 
-    def addBlueprint(self,blueprint,position): #adds blueprint to a position and deactivates it
+
+    def addBlueprint(self,item,position): #adds blueprint to a position and deactivates it
+        blueprint=Blueprint(item)
         if(blueprint.isActive==True):
-            self.pos[position]=blueprint
+            self.pos[position]=item
             blueprint.deactivateBlueprint()
         else:
             print('Blueprint is inactive')
 
+    def isItemsBlueprintActive(self,item): #returns True if blueprint is active
+        blueprint=Blueprint(item)
+        if(blueprint.isActive==True):
+            return True
+        else:
+            return False
+
     def getBlueprints(self): #show blueprints
         for i in self.itemDict:
+            blueprint=Blueprint(i)
+            recipe=blueprint.getBlueprint()
+            print("Recipe for ", i, " is: ", end=" ")
+            for j in range(len(recipe)):
+                print(recipe[j],end=" ")
+            print()
+
+    def registeredBlueprints(self): #shows blueprints in pos
+        for i in self.pos:
             blueprint=Blueprint(i)
             recipe=blueprint.getBlueprint()
             print("Recipe for ", i, " is: ", end=" ")

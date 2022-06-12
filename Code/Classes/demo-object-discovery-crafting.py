@@ -65,9 +65,9 @@ def foundMysteryItem(inv): #in case player finds mystery item
             inv.mystery_items[myster]+=1
         print("Would you like to sell the new mystery item?")
         answer=input("Type yes or no.")
-        if(answer=='yes'):
+        if(answer.lower()=='yes'):
             print("We are preparing your offer... (hasn't been completed)")
-        elif(answer=='no'):
+        elif(answer.lower()=='no'):
             print('Too bad!')
 
 def foundMaterial(inv,material): #in case player finds a material
@@ -125,17 +125,29 @@ showInv(player_inv)
 
 print("Would you like to craft an item?")
 answer=input("Type yes or no: ")
-if(answer=='yes'):
+if(answer.lower()=='yes'):
     if(not player_inv.enoughSpace()):
         while(clearInv(player_inv)):
             pass
-    print("You have these blueprints:")
-    player_inv.getBlueprints()
+    # print("You have these blueprints in pos:")
+    # player_inv.registeredBlueprints()
+    # print("would you like to add a blueprint recipe?")
+    # answer2=input("Type yes or no: ")
+    # if(answer2.lower()=='yes'):
+    #     print("\nChoose one of the items below:")
+    #     for i in player_inv.itemDict:
+    #         print(i,end=" ")
+    #     item2=input("Type item name: ")
+    #     positionn=input("Type position number (1-4)")
+    #     player_inv.addBlueprint(item2,positionn)
+    #     player_inv.registeredBlueprints()
+
     print("\nChoose the item you want to craft")
     print("You currently have these materials:")
     for i in player_inv.materialDict:
         if(player_inv.materialDict[i]):
             print(player_inv.materialDict[i],i)
+    player_inv.getBlueprints()
     item=input("Type item name:\n(gum_gun, stun_gun, EMP_grenade, time_travel_grenade, time_freeze_grenade, life_potion, speed_potion, stamina_potion) \n")
     done=player_inv.crafting(item)
     if(not done):
