@@ -81,7 +81,7 @@ deactivate StartingScreen-UI
    deactivate AvailProductsList
    Player->ShopMenu-UI:5. chooseToBuyItem()
    
-   ShopMenu-UI->Inventory:6. DoesPlayerHaveEnoughCoinsAndSpace()
+   ShopMenu-UI->Inventory:6. doesPlayerHaveEnoughCoinsAndSpace()
    activate Inventory
    deactivate ShopMenu-UI
    alt Players has enough coins and space in the inventory
@@ -93,7 +93,10 @@ deactivate StartingScreen-UI
    StartingScreen-UI->Inventory:6. addItemRemoveCoins()
    deactivate StartingScreen-UI
    Inventory->Inventory:6. updateInventory()
-   Inventory-->ShopMenu-UI:6. Successful Purchase
+   Inventory->Server:publishPurchase()
+   activate Server
+   Server-->ShopMenu-UI:6. Successful Purchase
+   deactivate Server
    activate ShopMenu-UI
    ShopMenu-UI->ShopMenu-UI: 7. showOptions()
    alt Player chooses Minigame
