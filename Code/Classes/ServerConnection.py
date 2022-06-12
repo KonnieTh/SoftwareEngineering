@@ -52,11 +52,6 @@ class ServerConnection:
         else:
             user.inventory[x] = quantity
 
-    def setMiniGame(self, user):
-        x = random.randint(1, 100)
-        if x <= 20:
-            self.addRandItem(user)
-
     def banUser(self, user, date):
         pass
 
