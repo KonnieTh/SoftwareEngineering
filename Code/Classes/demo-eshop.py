@@ -36,7 +36,7 @@ for i in range(len(todayOffers)):
             print('ERROR not enough coins or space!')
 
 choice3 = input('1.Want a 5 percent return \n2.A lott for the Minigame?\n(1/2): ')
-if choice3 == 1:
+if choice3 == '1':
     server.returnFunds(tempItem.BuyOutPrice,user7)
-elif choice == 2:
+elif choice == '2':
     server.setAndDisplayMiniGame(user7)

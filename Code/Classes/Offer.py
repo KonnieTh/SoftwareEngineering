@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import *
 
 class Offer:
     def __init__(self,seller,itemToSell,quantity,buyOutPrice,startingBid):
@@ -6,7 +6,7 @@ class Offer:
         self.itemToSell = itemToSell #itemToSell must be of type Item
         self.buyOutPrice = buyOutPrice
         self.startingBid = startingBid
-        self.timeOfCreation = datetime.datetime.now()
+        self.timeOfCreation = datetime.now()
         self.quantity = quantity
         self.priceOfPurchase = 0
 
