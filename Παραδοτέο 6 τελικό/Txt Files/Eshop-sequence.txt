@@ -1,0 +1,108 @@
+
+title E-shop sequence diagram
+
+actor Player
+
+participant StartingScreen-UI
+participant ShopMenu-UI
+participant MakeOfferForm-UI
+participant Inventory
+participant AvailProductsList
+participant ListOfPlayersOffers
+participant AvailBidsList
+participant Server
+
+activate Player
+
+Player->StartingScreen-UI:1. enterShop()
+activate StartingScreen-UI
+
+StartingScreen-UI->ShopMenu-UI:2. show()
+activate ShopMenu-UI
+deactivate StartingScreen-UI
+
+  alt 3. user chooses to buy from store
+   Player->ShopMenu-UI:3. chooseToBuyFromStore()
+   
+ else 3.1 user chooses to buy from other player
+ Player->ShopMenu-UI:3.1. chooseToBuyFromAnotherPlayer()
+   ShopMenu-UI->ListOfPlayersOffers:3.1.1. display()
+   activate ListOfPlayersOffers
+   ListOfPlayersOffers-->ShopMenu-UI:3.1.1. list
+   deactivate ListOfPlayersOffers
+   
+   deactivate ShopMenu-UI
+   alt Player chooses Buyout
+   Player->ShopMenu-UI:3.1.2. chooseToBuy() [continues at 6.]
+   activate ShopMenu-UI
+   else Player makes bid
+   Player->ShopMenu-UI: 3.1.2.1. choosesBid()
+   ShopMenu-UI->Server:3.1.2.2.showBids()
+   activate Server
+   Server->AvailBidsList:3.1.2.2. formBidsList()
+   activate AvailBidsList
+   AvailBidsList-->ShopMenu-UI:3.1.2.2. bids
+   deactivate AvailBidsList
+   Player->ShopMenu-UI:3.1.2.3. choosesBid()
+   ShopMenu-UI->Server:3.1.2.4. updateBiggestBid()
+   opt Player made the biggest bid
+   Server->ShopMenu-UI:3.1.2.5. playerMadeBiggestBid() [continues at 6.]
+   end
+	end
+  else Player chooses to make offer
+  Player->ShopMenu-UI:3.2. makeOffer() 
+ 
+  ShopMenu-UI->Inventory:3.2.1. showSellableItems()
+  activate Inventory
+  Inventory-->ShopMenu-UI:3.2.1. items
+  deactivate Inventory
+  Player->ShopMenu-UI:3.2.2. chooseItem()
+  ShopMenu-UI->MakeOfferForm-UI:3.2.3. display()
+   activate MakeOfferForm-UI
+  Player->MakeOfferForm-UI:3.2.4. completeForm()
+
+  alt Successful Offer
+  MakeOfferForm-UI->Server:3.2.5. publishOffer()
+  Server-->ShopMenu-UI: 3.2.5. success [stop]
+  else Unsuccessful offer
+  MakeOfferForm-UI-->ShopMenu-UI:3.2.5.1. error [stop]
+  deactivate MakeOfferForm-UI
+  
+ end
+ end
+ ShopMenu-UI->Server:4. makeListOfTodaysOffers()
+ Server->AvailProductsList:4. display()
+ deactivate Server
+   activate AvailProductsList
+   AvailProductsList-->ShopMenu-UI:<color:#red>4. list
+   deactivate AvailProductsList
+   Player->ShopMenu-UI:5. chooseToBuyItem()
+   
+   ShopMenu-UI->Inventory:6. DoesPlayerHaveEnoughCoinsAndSpace()
+   activate Inventory
+   deactivate ShopMenu-UI
+   alt Players has enough coins and space in the inventory
+   Inventory-->StartingScreen-UI:6. True
+   else Players doesn't have enough coins and space in the inventory
+   Inventory-->StartingScreen-UI:6.1. Error [stop]
+   end
+   StartingScreen-UI->Inventory:6. addItemRemoveCoins()
+   Inventory->Inventory:6. removeCoins()
+   Inventory->Inventory:6. addItem()
+   Inventory-->ShopMenu-UI:6. Successful Purchase
+   activate ShopMenu-UI
+   ShopMenu-UI->ShopMenu-UI: 7. showOptions()
+   alt Player chooses Minigame
+   Player->ShopMenu-UI:8.choosesMinigame() 
+   else Player chooses the 5% return
+   Player->ShopMenu-UI:8.1. choosesCoinReturn()
+   ShopMenu-UI->Inventory:8.1. addCoins()
+   end
+   ShopMenu-UI->ShopMenu-UI:9. showMinigame()
+   ShopMenu-UI->ShopMenu-UI:9. didPlayerWin()
+   opt Player won
+   ShopMenu-UI->Inventory:9. addItem()
+   deactivate ShopMenu-UI
+   deactivate Inventory
+   end
+   
