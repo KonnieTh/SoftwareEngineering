@@ -56,12 +56,12 @@ end
 
 Player->Co-opModeScreen-UI:6. userTypesPsswd
 alt 7. system checks if there is enough space and if psswd was correct
-Co-opModeScreen-UI->ServerRoom:psswdCorrectAndEnoughSpace()                                          
+Co-opModeScreen-UI->ServerRoom:tryConnection()                                          
 
 activate ServerRoom
 ServerRoom-->Co-opModeScreen-UI:True
 else 7.1. User cannot connect to the room (wrong psswd or not enough space)
-Co-opModeScreen-UI->ServerRoom:psswdCorrectAndEnoughSpace()                                         
+Co-opModeScreen-UI->ServerRoom:tryConnection()                                         
 
 ServerRoom-->Co-opModeScreen-UI:False
 Co-opModeScreen-UI->Co-opModeScreen-UI:PrintErr()
