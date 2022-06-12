@@ -1,3 +1,5 @@
+from ServerConnection import *
+
 class Hint:
     def __init__(self,hintTitle,tags,hintDescription,author):
         self.hintTitle = hintTitle
@@ -9,4 +11,7 @@ class Hint:
 
 
     def getHint(self):
-        return self.hintTitle, self.tags, self.hintDescription
+        return self
+
+
+   
