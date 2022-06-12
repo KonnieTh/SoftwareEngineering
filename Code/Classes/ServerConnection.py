@@ -14,7 +14,14 @@ class ServerConnection:
         self.availLevels = availLevels
         self.hintsList = []
 
-    def userSingedIn(self, user):
+    def checkRoom(self, roomID):
+        for i in self.roomList:
+            if i.roomID == roomID:
+                return True
+        return False
+
+
+    def userSingedUp(self, user):
         currentTime = datetime.datetime.now()
         self.usersList.append([user, currentTime])
 
@@ -45,18 +52,12 @@ class ServerConnection:
         else:
             user.inventory[x] = quantity
 
-    def setMiniGame(self, user):
-        x = random.randint(1, 100)
-        if x <= 20:
-            self.addRandItem(user)
-
     def banUser(self, user, date):
         pass
 
     def setAndDisplayMiniGame(self, user):
-        x = random.randint(1, 20)
-        y = int(input('Chooose a num between 1 and 20: '))
-        if x == y:
+        x = random.randint(1, 4)
+        if x == 1:
             self.addRandItem(user)
 
     def removeOfferFromList(self, offer):
@@ -121,13 +122,3 @@ class ServerConnection:
                 playerOffers.append(self.offerList[i])
 
         return playerOffers  
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,5 @@
-from User import User 
 from Hint import Hint
-from ServerConnection import ServerConnection
+from ServerConnection import *
  
  
 #create a user and a server instance

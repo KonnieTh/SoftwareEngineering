@@ -1,6 +1,6 @@
 from Hint import Hint 
 from inventory import Inventory
-from ServerConnection import ServerConnection
+from ServerConnection import *
 
 class User:
     def __init__(self,username,password,email):
@@ -29,7 +29,6 @@ class User:
             print("ERROR")
         else:
             self.inventory.coins -= ammount
-            server = ServerConnection()
             server.bidList.append([self,ammount,offer])
 
 
@@ -54,7 +53,6 @@ class User:
 
     
     def updateHintsAndCoinsOfUser(self,penalty):
-        server = ServerConnection()
         if server.percentOfPosReviews()==True:
             self.numOfHints += 1
         else:
