@@ -1,0 +1,70 @@
+title Object Discovery
+
+
+actor Player
+participant GameScreen-UI
+participant Item
+participant Inventory-UI
+participant Inventory
+participant MysteryItem
+participant Eshop-offer-UI
+
+activate Player
+Player->GameScreen-UI:1. foundsItem()
+activate GameScreen-UI
+GameScreen-UI->Item:1. interact()
+activate Item
+Item-->GameScreen-UI: 1. item
+deactivate Item
+GameScreen-UI->Inventory:2. isThereEnoughSpace()
+activate Inventory
+alt no space
+Inventory-->GameScreen-UI:2. not enough space
+else enough space
+Inventory-->GameScreen-UI:2.1. enough space [continues at 6.]
+end
+GameScreen-UI->GameScreen-UI:2. showMessage(Would you like to \ndiscard an item from your inventory?)
+Player->GameScreen-UI: 3. choosesDiscardItem()
+GameScreen-UI->Inventory-UI:4. showPage()
+activate Inventory-UI
+Player->Inventory-UI:5. chooseItem()
+opt removeItem
+Inventory-UI->Inventory: 6. removeItem()
+deactivate Inventory-UI
+Inventory-->GameScreen-UI: 6. done
+end
+alt mystery item
+  GameScreen-UI->GameScreen-UI:6. showMessage(You found a mystery item!\nDo you want to pick it up?)
+else material
+GameScreen-UI->GameScreen-UI:6.1.1. showMessage(You found a material!)
+GameScreen-UI->Inventory:6.1.2. canPlayerCraftItem()
+alt player can craft item
+Inventory-->GameScreen-UI:6.1.2. true [stop]
+GameScreen-UI->GameScreen-UI:6.1.2. showNotification()
+else player can't craft item
+Inventory-->GameScreen-UI:6.1.2.1 .false [stop]
+end
+end
+Player->GameScreen-UI:7. addMysteryItem()
+GameScreen-UI->Inventory:8. checkMystery()
+Inventory->MysteryItem:8. checkEffect()
+activate MysteryItem
+alt mystery item is good
+MysteryItem-->GameScreen-UI:9. success
+else mystery item is bad
+MysteryItem-->GameScreen-UI:9.1. fail
+GameScreen-UI->Inventory:9.1. destroyItems() [stop]
+end
+MysteryItem->Inventory:9. addMysteryItem()
+deactivate MysteryItem
+deactivate Inventory
+GameScreen-UI->GameScreen-UI:9. askToMakeOffer()
+Player->GameScreen-UI:10. sellMystery()
+activate Eshop-offer-UI
+GameScreen-UI->Eshop-offer-UI:11. openEshop
+deactivate GameScreen-UI
+note over Eshop-offer-UI:continues with\nE-shop Use-case
+deactivate Eshop-offer-UI
+
+
+
