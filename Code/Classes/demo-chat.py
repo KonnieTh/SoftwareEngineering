@@ -1,9 +1,9 @@
-from ServerConnection import ServerConnection
+from ServerConnection import *
 from User import User
 from Offer import Offer
 from TextChannel import TextChannel
 
-server = ServerConnection(None,None,None)#να σβηστεί αργότερα
+#server = ServerConnection(None,None,None)#να σβηστεί αργότερα
 
 user1 = User('user1','123456','user1@gmail.com')
 user1.listOfAchievements = ['1','2'] #must be of type Achievement, in this case its just a string for demo purposes

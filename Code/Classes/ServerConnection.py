@@ -1,4 +1,6 @@
-from User import *
+#from User import *
+from Hint import Hint 
+from inventory import Inventory
 import datetime
 import random
 
@@ -123,8 +125,7 @@ class ServerConnection:
         return playerOffers  
 
 
-
-
+server = ServerConnection(None,None,None)
 
 
 
